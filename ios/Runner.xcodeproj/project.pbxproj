@@ -99,7 +99,6 @@
 				01F577E4B452A4F3C1ACFFD8 /* Pods-RunnerTests.release.xcconfig */,
 				E3E7CDF36A2C2BB6FA4454B6 /* Pods-RunnerTests.profile.xcconfig */,
 			);
-			name = Pods;
 			path = Pods;
 			sourceTree = "<group>";
 		};
@@ -336,7 +335,7 @@
 		9740EEB61CF901F6004384FC /* Run Script */ = {
 			isa = PBXShellScriptBuildPhase;
 			alwaysOutOfDate = 1;
-			buildActionMask = 2147483647;
+			buildActionMask = 12;
 			files = (
 			);
 			inputPaths = (
@@ -346,7 +345,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "/bin/sh \"$FLUTTER_ROOT/packages/flutter_tools/bin/xcode_backend.sh\" build";
+			shellScript = "sed -i \"\" \"s/<mmkv\\/MMKVPlugin.h>/<mmkvflutter\\/MMKVPlugin.h>/g\" ${SRCROOT}/Runner/GeneratedPluginRegistrant.m\nsed -i \"\" \"s/@import mmkv;/@import mmkvflutter;/g\" ${SRCROOT}/Runner/GeneratedPluginRegistrant.m\n/bin/sh \"$FLUTTER_ROOT/packages/flutter_tools/bin/xcode_backend.sh\" build\n";
 		};
 		A175B806074D740F32D8CEF1 /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;

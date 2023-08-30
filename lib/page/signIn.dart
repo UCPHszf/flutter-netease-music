@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
-import 'package:cloud_music/page/home.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloud_music/resource/color.dart';
 import 'package:cloud_music/resource/constants.dart';
 import 'package:cloud_music/resource/dim.dart';
@@ -8,9 +8,6 @@ import 'package:cloud_music/util/dependencies.dart';
 import 'package:cloud_music/util/NetworkRequest.dart';
 import 'package:flutter/material.dart';
 import 'package:logger/logger.dart';
-import 'package:provider/provider.dart';
-
-import '../provider/pageSettingState.dart';
 
 class SignInPage extends StatefulWidget {
   const SignInPage({Key? key}) : super(key: key);
@@ -28,6 +25,14 @@ class _SignInPageState extends State<SignInPage> {
   @override
   void initState() {
     super.initState();
+    NetworkRequest.isLogin().then(
+      (value) => {
+        if (value)
+          {
+            Navigator.pushReplacementNamed(context, Constants.homePageRoute),
+          }
+      },
+    );
   }
 
   @override
@@ -44,7 +49,6 @@ class _SignInPageState extends State<SignInPage> {
         second -= interval;
         final qrStatusCode = await NetworkRequest.checkQRCodeStatus(qrCodeKey);
         if (qrStatusCode == Constants.qrAuthorizeSuccess) {
-          timer.cancel();
           if (context.mounted) {
             Navigator.pushNamed(context, Constants.homePageRoute);
           }

@@ -8,8 +8,9 @@ class AppColor {
   static const Color homePageSearchBarGradientEnd = Color(0x20e5b2fe);
 
   static const Color subCategoryIconColor = Colors.redAccent;
-  static const Color dividerColor = Colors.grey;
+  static const Color dividerColor = grey;
   static const Color white = Colors.white;
   static const Color red = Colors.red;
   static const Color black = Colors.black;
+  static const Color grey = Colors.grey;
 }

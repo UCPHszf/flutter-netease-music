@@ -1,23 +1,35 @@
 class Constants {
-  static const String firebaseSettingCollection = "setting";
-  static const String firebasePageSettingCollection = "pageSetting";
-  static const String apiDocument = 'api';
-  static const String searchPageDocument = 'searchPage';
+  static const String firebaseCollection = "NeteaseMusicApp";
+
+  static const String settingDoc = 'settings';
+  static const String pageSettingDoc = 'pageSetting';
+
   static const String apiServerField = 'apiServer';
-  static const String topListField = 'topList';
+  static const String searchPageTopListField = 'searchPageTopList';
   static const String topListLimitField = 'topListLimit';
+  static const String mmkvQRKey = 'qr_key';
 
   static const String urlSendCaptcha = "/captcha/sent";
   static const String urlCaptchaVerify = "/captcha/verify";
+
   static const String urlQrcodeKeyGenerate = "/login/qr/key";
   static const String urlQrcodeGenerate = "/login/qr/create";
   static const String urlQrcodeStatus = "/login/qr/check";
-  static const String urlDefaultSearchWord = "/search/default";
+  static const String urlLoginStatus = "/login/status";
+
   static const String urlBanner = "/banner";
+
+  static const String urlArtistDetail = "/artist/detail";
+  static const String urlFollowUser = "/follow";
+
   static const String urlFavoriteSongList = "/likelist";
-  static const String urlSingerList = "/artist/list";
+
+  static const String urlDefaultSearchWord = "/search/default";
   static const String urlHotSearchDetail = "/search/hot/detail";
   static String urlSearchSuggestList = "/search/suggest";
+
+  static const String urlSingerList = "/artist/list";
+  static const String urlTopSingerList = "/top/artists";
   static String urlSongListAllTrack = "/playlist/track/all";
   static String urlAllList = "/toplist";
 
@@ -35,6 +47,8 @@ class Constants {
 
   static const String search = "搜索";
   static const String defaultSearchText = "搜索音乐、视频、播客、歌词";
+  static const String singerCategory = "歌手分类";
+
   static const int singerTypeMale = 1;
   static const int singerTypeFemale = 2;
   static const int singerTypeBand = 3;
@@ -49,14 +63,15 @@ class Constants {
   static const String musicStyle = "曲风";
 
   static const String topListHotSearch = "热搜榜";
+  static const String hotSinger = "热门歌手";
 
   static String unKnownPageText(String pageName) => "UnKnown Page: $pageName";
 
   static const String defaultCtCode = "86";
   static const int defaultTopListLimit = 20;
 
-  static const int connectTimeoutSeconds = 10;
-  static const int receiveTimeoutSeconds = 10;
+  static const int connectTimeoutSeconds = 20;
+  static const int receiveTimeoutSeconds = 20;
 
   static int statusCodeUnAuthorized = 401;
   static int statusCodeSuccess = 200;
@@ -71,4 +86,5 @@ class Constants {
   static const String signInPageRoute = "/signIn";
   static const String homePageRoute = "/home";
   static const String searchPageRoute = "/search";
+  static const String singerCategoryPageRoute = "/singerCategory";
 }

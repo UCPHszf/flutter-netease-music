@@ -6,8 +6,8 @@ class Dim {
   static const double padding6 = 6;
   static const double padding10 = 10;
   static const double padding15 = 15;
-
-  static const double margin10 = 10;
+  static const double padding20 = 20;
+  static const double padding30 = 30;
 
   static const int fontSize20 = 20;
   static const int fontSize15 = 15;
@@ -29,7 +29,9 @@ class Dim {
 
   static num searchPageTopListWidth = 280;
 
-  static double margin20 = 20;
+  static const double margin10 = 10;
+  static const double margin15 = 15;
+  static const double margin20 = 20;
 
   static double screenUtilOnVertical(num value) {
     return ScreenUtil().setHeight(value);

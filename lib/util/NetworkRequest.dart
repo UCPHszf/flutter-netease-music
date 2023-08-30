@@ -2,8 +2,9 @@ import 'dart:async';
 import 'dart:ffi';
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:cloud_music/model/song/topListItem.dart';
+import 'package:cloud_music/model/song/topListSong.dart';
 import 'package:cloud_music/model/user/artist.dart';
+import 'package:cloud_music/model/user/topListSinger.dart';
 import 'package:cloud_music/model/widget/bannerItem.dart';
 import 'package:cloud_music/resource/constants.dart';
 import 'package:cloud_music/resource/enum.dart';
@@ -14,7 +15,6 @@ import 'dependencies.dart';
 import 'networkManager.dart';
 
 class NetworkRequest {
-
   static Logger _logger = getIt<Logger>();
 
   static String buildUrl(String url, Map<String, dynamic> params) {
@@ -129,9 +129,7 @@ class NetworkRequest {
   static Future<String> getDefaultSearchWord() {
     Dio dio = getDio();
     final String url = dio.options.baseUrl + Constants.urlDefaultSearchWord;
-    final Map<String, dynamic> params = {"timestamp": timestampString()};
-    final String buildUrl = NetworkRequest.buildUrl(url, params);
-    return dio.get(buildUrl).then((response) {
+    return dio.get(url).then((response) {
       final Map<String, dynamic> data = response.data as Map<String, dynamic>;
       if (data["code"] != 200) {
         return "";
@@ -198,7 +196,7 @@ class NetworkRequest {
   }
 
   // 获取歌手列表
-  static Future<List<Artist>> artistList(
+  static Future<List<TopListSinger>> artistList(
       {int singerType = Constants.singerTypeMale,
       int singerArea = Constants.singerAreaCN,
       Char? initial}) {
@@ -207,8 +205,10 @@ class NetworkRequest {
     final Map<String, dynamic> params = {
       "type": singerType,
       "area": singerArea,
-      "initial": initial,
     };
+    if (initial != null) {
+      params["initial"] = initial;
+    }
     final String buildUrl = NetworkRequest.buildUrl(url, params);
     return dio.get(buildUrl).then(
       (response) {
@@ -216,11 +216,11 @@ class NetworkRequest {
         if (data["code"] != 200) {
           return [];
         } else {
-          List<Artist> singerList = [];
+          List<TopListSinger> singerList = [];
           List<dynamic> singers = data["artists"] as List<dynamic>;
           for (var element in singers) {
             singerList.add(
-              Artist.fromJson(element as Map<String, dynamic>),
+              TopListSinger.fromJson(element as Map<String, dynamic>),
             );
           }
           return singerList;
@@ -231,7 +231,7 @@ class NetworkRequest {
 
   // 获取热搜歌曲列表
   @Deprecated("replace by topList")
-  static Future<List<TopListItem>> hotSearchSongList() {
+  static Future<List<TopListSong>> hotSearchSongList() {
     Dio dio = getDio();
     final String url = dio.options.baseUrl + Constants.urlHotSearchDetail;
     return dio.get(url).then(
@@ -240,11 +240,11 @@ class NetworkRequest {
         if (data["code"] != 200) {
           return [];
         } else {
-          List<TopListItem> hotSearchSongList = [];
+          List<TopListSong> hotSearchSongList = [];
           List<dynamic> hotSearchSongs = data["data"] as List<dynamic>;
           for (var element in hotSearchSongs) {
             hotSearchSongList.add(
-              TopListItem.fromHotSearch(element as Map<String, dynamic>),
+              TopListSong.fromHotSearch(element as Map<String, dynamic>),
             );
           }
           return hotSearchSongList;
@@ -302,7 +302,7 @@ class NetworkRequest {
   }
 
   // 获取榜单信息
-  static Future<List<TopListItem>> topList(
+  static Future<List<TopListSong>> topList(
       TopListType topListType, int? topListId) {
     Dio dio = getDio();
     final String url;
@@ -315,11 +315,11 @@ class NetworkRequest {
           if (data["code"] != 200) {
             return [];
           } else {
-            List<TopListItem> hotSearchSongList = [];
+            List<TopListSong> hotSearchSongList = [];
             List<dynamic> hotSearchSongs = data["data"] as List<dynamic>;
             for (var element in hotSearchSongs) {
               hotSearchSongList.add(
-                TopListItem.fromHotSearch(element as Map<String, dynamic>),
+                TopListSong.fromHotSearch(element as Map<String, dynamic>),
               );
             }
             return hotSearchSongList;
@@ -339,11 +339,11 @@ class NetworkRequest {
           if (data["code"] != 200) {
             return [];
           } else {
-            List<TopListItem> topList = [];
+            List<TopListSong> topList = [];
             List<dynamic> songs = data["songs"] as List<dynamic>;
             for (var element in songs) {
               topList.add(
-                TopListItem.fromSongList(element as Map<String, dynamic>),
+                TopListSong.fromSongList(element as Map<String, dynamic>),
               );
             }
             return topList;
@@ -353,19 +353,96 @@ class NetworkRequest {
     }
   }
 
-  // 获取pageSettingcollection的所有配置
+  // 获取pageSettingDoc的所有配置
   static Future<Map<String, dynamic>> pageSetting() {
     FirebaseFirestore firestore = FirebaseFirestore.instance;
     return firestore
-        .collection(Constants.firebasePageSettingCollection)
+        .collection(Constants.firebaseCollection)
+        .doc(Constants.pageSettingDoc)
         .get()
         .then(
-      (value) {
-        Map<String, dynamic> result = {};
-        for (var element in value.docs) {
-          result[element.id] = element.data();
+      (DocumentSnapshot snapshot) {
+        if (snapshot.exists) {
+          return snapshot.data() as Map<String, dynamic>;
+        } else {
+          return {};
         }
-        return result;
+      },
+    );
+  }
+
+  // 检测是否登录
+  static Future<bool> isLogin() {
+    Dio dio = getDio();
+    final String url = dio.options.baseUrl + Constants.urlLoginStatus;
+    return dio.get(url).then(
+      (response) {
+        final Map<String, dynamic> data = response.data as Map<String, dynamic>;
+        if (data["code"] != 200) {
+          return false;
+        } else {
+          return data["profile"] != null;
+        }
+      },
+    );
+  }
+
+  // 获取热门歌手列表
+  static Future<List<TopListSinger>> hotSingerList({int offset = 0}) {
+    Dio dio = getDio();
+    final String url = dio.options.baseUrl + Constants.urlTopSingerList;
+    return dio.get(url).then(
+      (response) {
+        final Map<String, dynamic> data = response.data as Map<String, dynamic>;
+        if (data["code"] != 200) {
+          return [];
+        } else {
+          List<TopListSinger> result = [];
+          List<dynamic> hotSingers = data["artists"] as List<dynamic>;
+          for (var element in hotSingers) {
+            result.add(
+              TopListSinger.fromJson(element as Map<String, dynamic>),
+            );
+          }
+          return result;
+        }
+      },
+    );
+  }
+
+  // 获取歌手详情
+  static Future<Artist?> artistDetail(int artistId) {
+    Dio dio = getDio();
+    final String url = dio.options.baseUrl + Constants.urlArtistDetail;
+    final Map<String, dynamic> params = {
+      "id": artistId,
+    };
+    final String buildUrl = NetworkRequest.buildUrl(url, params);
+    return dio.get(buildUrl).then(
+      (response) {
+        final Map<String, dynamic> data = response.data as Map<String, dynamic>;
+        if (data["code"] != 200) {
+          return null;
+        } else {
+          return Artist.fromJson(data["data"] as Map<String, dynamic>);
+        }
+      },
+    );
+  }
+
+  // 关注用户
+  static Future<bool> followUser(int userId, bool follow) {
+    Dio dio = getDio();
+    final String url = dio.options.baseUrl + Constants.urlFollowUser;
+    final Map<String, dynamic> params = {
+      "id": userId,
+      "t": follow ? 1 : 0,
+    };
+    final String buildUrl = NetworkRequest.buildUrl(url, params);
+    return dio.post(buildUrl).then(
+      (response) {
+        final Map<String, dynamic> data = response.data as Map<String, dynamic>;
+        return data["code"] == 200;
       },
     );
   }

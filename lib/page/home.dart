@@ -42,12 +42,12 @@ class _HomePageState extends State<HomePage> {
       },
     );
     PageSettingState pageSettingState =
-    Provider.of<PageSettingState>(context, listen: false);
+        Provider.of<PageSettingState>(context, listen: false);
     NetworkRequest.pageSetting().then(
-          (value) {
+      (value) {
         List<String> topList = List<String>.from(
-          value[Constants.searchPageDocument][Constants.topListField].map(
-                (e) {
+          value[Constants.searchPageTopListField].map(
+            (e) {
               return e.toString();
             },
           ),
@@ -55,13 +55,13 @@ class _HomePageState extends State<HomePage> {
         if (context.mounted) {
           pageSettingState.searchPageTopList = topList;
           pageSettingState.searchPageTopListLimit =
-          value[Constants.searchPageDocument][Constants.topListLimitField];
+              value[Constants.topListLimitField];
         }
       },
     );
 
     NetworkRequest.allTopList().then(
-          (value) {
+      (value) {
         pageSettingState.allTopList = value;
       },
     );

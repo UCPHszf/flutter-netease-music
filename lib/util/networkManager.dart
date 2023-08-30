@@ -56,8 +56,8 @@ class NetworkManager {
     FirebaseFirestore firestore = FirebaseFirestore.instance;
     try {
       final DocumentReference apiDocument = firestore
-          .collection(Constants.firebaseSettingCollection)
-          .doc(Constants.apiDocument);
+          .collection(Constants.firebaseCollection)
+          .doc(Constants.settingDoc);
       DocumentSnapshot snapshot = await apiDocument.get();
       if (snapshot.exists) {
         Map<String, dynamic> data = snapshot.data() as Map<String, dynamic>;

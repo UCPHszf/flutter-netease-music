@@ -49,11 +49,13 @@ class _CustomSearchBarState extends State<CustomSearchBar> {
       Duration(seconds: Constants.requestDefaultSearchTextInterval),
       (timer) async {
         String defaultSearchText = await NetworkRequest.getDefaultSearchWord();
-        setState(() {
-          this.defaultSearchText = defaultSearchText;
-          Provider.of<SearchBarState>(context, listen: false).searchText =
-              defaultSearchText;
-        });
+        setState(
+          () {
+            this.defaultSearchText = defaultSearchText;
+            Provider.of<SearchBarState>(context, listen: false).searchText =
+                defaultSearchText;
+          },
+        );
       },
     );
   }

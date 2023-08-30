@@ -1,6 +1,7 @@
 import 'package:cloud_music/model/pageArgs.dart';
 import 'package:cloud_music/page/home.dart';
 import 'package:cloud_music/page/search.dart';
+import 'package:cloud_music/page/singerCategory.dart';
 import 'package:cloud_music/resource/constants.dart';
 import 'package:cloud_music/resource/enum.dart';
 import 'package:cloud_music/widget/customRoute.dart';
@@ -20,10 +21,13 @@ class Routes {
         return CustomRoute<bool>(
             builder: (BuildContext context) => const HomePage(),
             transitionType: TransitionType.slide);
-
       case Constants.searchPageRoute:
         return CustomRoute<bool>(
             builder: (BuildContext context) => const SearchPage(),
+            transitionType: TransitionType.slide);
+      case Constants.singerCategoryPageRoute:
+        return CustomRoute<bool>(
+            builder: (BuildContext context) => const SingerCategory(),
             transitionType: TransitionType.slide);
       default:
         return onUnknownRoute(settings);

@@ -1,7 +1,6 @@
 import 'package:cloud_music/provider/pageSettingState.dart';
 import 'package:cloud_music/provider/searchBarState.dart';
 import 'package:cloud_music/resource/constants.dart';
-import 'package:cloud_music/util/NetworkRequest.dart';
 import 'package:cloud_music/util/dependencies.dart';
 import 'package:cloud_music/util/routes.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -41,7 +40,7 @@ class MyApp extends StatelessWidget {
         title: 'Netease Cloud Music Flutter',
         debugShowCheckedModeBanner: false,
         routes: Routes.route(),
-        initialRoute: Constants.homePageRoute,
+        initialRoute: Constants.signInPageRoute,
         onUnknownRoute: (settings) => Routes.onUnknownRoute(settings),
         onGenerateRoute: (settings) => Routes.onGenerateRoute(settings),
         navigatorKey: GetIt.instance<GlobalKey<NavigatorState>>(),

@@ -32,29 +32,6 @@ class _SearchPageState extends State<SearchPage> {
     endIndent: _dividerEndIndent,
   );
 
-  final List<Widget> _subSearchCategoryList = [
-    SubSearchCategory(
-      title: Constants.singer,
-      icon: Icons.person,
-      iconColor: AppColor.subCategoryIconColor,
-      onTap: () {},
-    ),
-    divider,
-    SubSearchCategory(
-      title: Constants.musicStyle,
-      icon: Icons.library_music,
-      iconColor: AppColor.subCategoryIconColor,
-      onTap: () {},
-    ),
-    divider,
-    SubSearchCategory(
-      title: Constants.songRecognition,
-      icon: Icons.keyboard_voice,
-      iconColor: AppColor.subCategoryIconColor,
-      onTap: () {},
-    ),
-  ];
-
   @override
   void initState() {
     super.initState();
@@ -62,6 +39,31 @@ class _SearchPageState extends State<SearchPage> {
 
   @override
   Widget build(BuildContext context) {
+    final List<Widget> subSearchCategoryList = [
+      SubSearchCategory(
+        title: Constants.singer,
+        icon: Icons.person,
+        iconColor: AppColor.subCategoryIconColor,
+        onTap: () {
+          Navigator.pushNamed(context, Constants.singerCategoryPageRoute);
+        },
+      ),
+      divider,
+      SubSearchCategory(
+        title: Constants.musicStyle,
+        icon: Icons.library_music,
+        iconColor: AppColor.subCategoryIconColor,
+        onTap: () {},
+      ),
+      divider,
+      SubSearchCategory(
+        title: Constants.songRecognition,
+        icon: Icons.keyboard_voice,
+        iconColor: AppColor.subCategoryIconColor,
+        onTap: () {},
+      ),
+    ];
+
     PageSettingState pageSettingState =
         Provider.of<PageSettingState>(context, listen: false);
     List<String> loadedTopList = pageSettingState.searchPageTopList;
@@ -105,13 +107,15 @@ class _SearchPageState extends State<SearchPage> {
             decorationColorGradientType: false,
           ),
           bottom: PreferredSize(
-            preferredSize: Size.fromHeight(Dim.screenUtilOnVertical(40)),
+            preferredSize: Size.fromHeight(
+              Dim.screenUtilOnVertical(40),
+            ),
             child: Column(
               children: [
                 IntrinsicHeight(
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: _subSearchCategoryList,
+                    children: subSearchCategoryList,
                   ),
                 ),
                 SizedBox(

@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:logger/logger.dart';
 import 'package:provider/provider.dart';
 
-import '../../model/song/topListItem.dart';
+import '../../model/song/topListSong.dart';
 import '../../provider/pageSettingState.dart';
 import '../../resource/color.dart';
 import '../../resource/enum.dart';
@@ -33,7 +33,7 @@ class SearchPageTopList extends StatefulWidget {
 }
 
 class _SearchPageTopListState extends State<SearchPageTopList> {
-  List<TopListItem> _topListItems = [];
+  List<TopListSong> _topListItems = [];
   Logger logger = getIt<Logger>();
 
   @override
