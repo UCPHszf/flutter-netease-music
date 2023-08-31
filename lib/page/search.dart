@@ -4,11 +4,13 @@ import 'package:cloud_music/resource/constants.dart';
 import 'package:cloud_music/resource/dim.dart';
 import 'package:cloud_music/resource/enum.dart';
 import 'package:cloud_music/widget/search/searchBar.dart';
-import 'package:cloud_music/widget/topList/searchPageTopList.dart';
 import 'package:flutter/material.dart';
+import 'package:logger/logger.dart';
 import 'package:provider/provider.dart';
 
 import '../provider/pageSettingState.dart';
+import '../util/dependencies.dart';
+import '../widget/itemBlock/searchPageTopList.dart';
 import '../widget/search/subSearchCategory.dart';
 
 class SearchPage extends StatefulWidget {
@@ -32,14 +34,15 @@ class _SearchPageState extends State<SearchPage> {
     endIndent: _dividerEndIndent,
   );
 
+  late final List<Widget> subSearchCategoryList;
+  late final List<String> loadedTopList;
+  late PageSettingState pageSettingState;
+  Logger logger = getIt<Logger>();
+
   @override
   void initState() {
     super.initState();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final List<Widget> subSearchCategoryList = [
+    subSearchCategoryList = [
       SubSearchCategory(
         title: Constants.singer,
         icon: Icons.person,
@@ -53,7 +56,9 @@ class _SearchPageState extends State<SearchPage> {
         title: Constants.musicStyle,
         icon: Icons.library_music,
         iconColor: AppColor.subCategoryIconColor,
-        onTap: () {},
+        onTap: () {
+          Navigator.pushNamed(context, Constants.styleCategoryPageRoute);
+        },
       ),
       divider,
       SubSearchCategory(
@@ -64,13 +69,15 @@ class _SearchPageState extends State<SearchPage> {
       ),
     ];
 
-    PageSettingState pageSettingState =
-        Provider.of<PageSettingState>(context, listen: false);
-    List<String> loadedTopList = pageSettingState.searchPageTopList;
+    pageSettingState = Provider.of<PageSettingState>(context, listen: false);
+    loadedTopList = pageSettingState.searchPageTopList;
     loadedTopList.retainWhere(
       (element) => pageSettingState.allTopList.containsKey(element),
     );
+  }
 
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
           leading: Padding(
@@ -134,7 +141,7 @@ class _SearchPageState extends State<SearchPage> {
             slivers: [
               SliverToBoxAdapter(
                 child: SizedBox(
-                  height: 1000,
+                  height: 950,
                   child: ListView.separated(
                     padding: EdgeInsets.symmetric(
                       horizontal: Dim.screenUtilOnHorizontal(Dim.padding15),

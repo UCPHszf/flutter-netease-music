@@ -133,6 +133,7 @@ class _SearchPageTopListState extends State<SearchPageTopList> {
                           color: AppColor.black,
                           fontSize: Dim.screenUtilOnSp(Dim.fontSize15),
                           overflow: TextOverflow.ellipsis,
+                          fontWeight: index>2?FontWeight.normal:FontWeight.bold,
                         ),
                       ),
                     ),

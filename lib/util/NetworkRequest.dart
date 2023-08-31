@@ -3,6 +3,7 @@ import 'dart:ffi';
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloud_music/model/song/topListSong.dart';
+import 'package:cloud_music/model/style/musicStyle.dart';
 import 'package:cloud_music/model/user/artist.dart';
 import 'package:cloud_music/model/user/topListSinger.dart';
 import 'package:cloud_music/model/widget/bannerItem.dart';
@@ -443,6 +444,52 @@ class NetworkRequest {
       (response) {
         final Map<String, dynamic> data = response.data as Map<String, dynamic>;
         return data["code"] == 200;
+      },
+    );
+  }
+
+  // 获取曲风列表
+  static Future<List<MusicStyle>> styleList() {
+    Dio dio = getDio();
+    final String url = dio.options.baseUrl + Constants.urlStyleList;
+    return dio.get(url).then(
+      (response) {
+        final Map<String, dynamic> data = response.data as Map<String, dynamic>;
+        if (data["code"] != 200) {
+          return [];
+        } else {
+          List<MusicStyle> result = [];
+          List<dynamic> musicStyles = data["data"] as List<dynamic>;
+          for (var element in musicStyles) {
+            result.add(
+              MusicStyle.fromJson(element as Map<String, dynamic>),
+            );
+          }
+          return result;
+        }
+      },
+    );
+  }
+
+  // 获取用户曲风偏好
+  static Future<(List<MusicStyle>, List<MusicStyle>)> stylePreference() {
+    Dio dio = getDio();
+    (List<MusicStyle>, List<MusicStyle>) result = ([], []);
+    final String url = dio.options.baseUrl + Constants.urlStylePreference;
+    return dio.get(url).then(
+      (response) {
+        final Map<String, dynamic> data = response.data as Map<String, dynamic>;
+        if (data["code"] != 200 || data["data"] == null) {
+          return result;
+        } else {
+          for (var element in data["data"]["tagPreferenceVos"]) {
+            result.$1.add(MusicStyle.fromStylePreference(element));
+          }
+          for (var element in data["data"]["tags"]) {
+            result.$2.add(MusicStyle.fromJson(element));
+          }
+          return result;
+        }
       },
     );
   }

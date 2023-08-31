@@ -21,6 +21,9 @@ NetEase Music implement in flutter 基于flutter实现的网易云音乐
     - singer list UI(歌手列表UI)
     - Try to keep login status, however, the api doesn't support it(尝试保持登录状态，但是api不支持)
 
+8.31 StyleList
+    - style list UI progress: 80%(风格列表UI进度：80%)
+
 
 
 

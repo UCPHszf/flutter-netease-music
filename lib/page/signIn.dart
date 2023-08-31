@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:convert';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloud_music/resource/color.dart';
 import 'package:cloud_music/resource/constants.dart';
 import 'package:cloud_music/resource/dim.dart';
@@ -59,10 +58,10 @@ class _SignInPageState extends State<SignInPage> {
     });
   }
 
+  final double signInPageTopContainerHeight = 300;
+
   @override
   Widget build(BuildContext context) {
-    double signInPageTopContainerHeight = 300;
-
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,

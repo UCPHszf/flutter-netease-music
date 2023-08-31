@@ -26,12 +26,16 @@ class Constants {
 
   static const String urlDefaultSearchWord = "/search/default";
   static const String urlHotSearchDetail = "/search/hot/detail";
-  static String urlSearchSuggestList = "/search/suggest";
+  static const String urlSearchSuggestList = "/search/suggest";
 
   static const String urlSingerList = "/artist/list";
   static const String urlTopSingerList = "/top/artists";
-  static String urlSongListAllTrack = "/playlist/track/all";
-  static String urlAllList = "/toplist";
+  static const String urlSongListAllTrack = "/playlist/track/all";
+  static const String urlAllList = "/toplist";
+
+  static const String urlStyleList = "/style/list";
+  static const String urlStylePreference = "/style/preference";
+  static const String urlStyleDetail = "/style/detail";
 
   static const String qrcodeKeyGenerateFailedInfo =
       "Failed to generate QRCode key";
@@ -43,11 +47,14 @@ class Constants {
   static const String agreePrivacyPolicy =
       "I have read and agree to the privacy policy";
   static const String signInPageAppBarTitle = "登录";
-  static const String unKnownPageTitle = "You are lost";
+  static const String unKnownPageTitle = "找不到页面";
 
   static const String search = "搜索";
   static const String defaultSearchText = "搜索音乐、视频、播客、歌词";
   static const String singerCategory = "歌手分类";
+  static const String styleCategory = "曲风分类";
+  static const String styleDataTip = "根据你的听歌记录生成,每周日更新";
+  static const String myStylePreference = "我的曲风偏好";
 
   static const int singerTypeMale = 1;
   static const int singerTypeFemale = 2;
@@ -87,4 +94,5 @@ class Constants {
   static const String homePageRoute = "/home";
   static const String searchPageRoute = "/search";
   static const String singerCategoryPageRoute = "/singerCategory";
+  static const String styleCategoryPageRoute = "/styleCategory";
 }

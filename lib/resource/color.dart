@@ -7,10 +7,17 @@ class AppColor {
   static const Color homePageSearchBarGradientStart = Color(0x20bba4fe);
   static const Color homePageSearchBarGradientEnd = Color(0x20e5b2fe);
 
+  static const String myStylePreferenceColorShallow = "FFCDD2";
+  static const String myStylePreferenceColorDeep = "D32F2F";
+
   static const Color subCategoryIconColor = Colors.redAccent;
   static const Color dividerColor = grey;
   static const Color white = Colors.white;
   static const Color red = Colors.red;
   static const Color black = Colors.black;
   static const Color grey = Colors.grey;
+
+  static Color parseColorString(String colorString) {
+    return Color(int.parse("0xFF$colorString"));
+  }
 }

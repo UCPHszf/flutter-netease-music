@@ -67,10 +67,11 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
+  final activeDotColor = Colors.white;
+  final inactiveDotColor = Colors.grey;
+
   @override
   Widget build(BuildContext context) {
-    const activeDotColor = Colors.white;
-    const inactiveDotColor = Colors.grey;
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.transparent,
