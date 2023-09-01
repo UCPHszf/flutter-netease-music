@@ -23,6 +23,7 @@ dependencies:
   flutter_screenutil: ^5.8.4
   logger: ^2.0.1
   card_swiper: ^3.0.1
+  scrollable_positioned_list: ^0.3.8
 
 dev_dependencies:
   flutter_test:

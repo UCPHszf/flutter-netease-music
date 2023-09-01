@@ -248,12 +248,14 @@ class _StyleCategoryState extends State<StyleCategory> {
               ),
               color: AppColor.parseColorString(style.colorDeep!),
               child: ListView.builder(
+                controller: _secondLevelTagScrollController,
                 itemBuilder: (context, index) {
                   return GestureDetector(
                     onTap: () {
                       setState(() {
                         _secondLevelSelectedTagIndex = index;
                       });
+
                     },
                     child: Container(
                       padding: EdgeInsets.symmetric(

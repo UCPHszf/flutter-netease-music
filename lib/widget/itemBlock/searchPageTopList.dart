@@ -133,7 +133,8 @@ class _SearchPageTopListState extends State<SearchPageTopList> {
                           color: AppColor.black,
                           fontSize: Dim.screenUtilOnSp(Dim.fontSize15),
                           overflow: TextOverflow.ellipsis,
-                          fontWeight: index>2?FontWeight.normal:FontWeight.bold,
+                          fontWeight:
+                              index > 2 ? FontWeight.normal : FontWeight.bold,
                         ),
                       ),
                     ),
@@ -146,6 +147,10 @@ class _SearchPageTopListState extends State<SearchPageTopList> {
                               _topListItems[index].iconUrl!,
                               width: Dim.screenUtilOnHorizontal(20),
                               height: Dim.screenUtilOnVertical(20),
+                              errorBuilder: (context, error, stackTrace) {
+                                logger.e(error);
+                                return Container();
+                              },
                             ),
                           )
                         : Container(),
