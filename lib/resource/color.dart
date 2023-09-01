@@ -10,6 +10,8 @@ class AppColor {
   static const String myStylePreferenceColorShallow = "FFCDD2";
   static const String myStylePreferenceColorDeep = "D32F2F";
 
+  static const Color styleTopContentTextShallow = Color(0x80FFE0B2);
+
   static const Color subCategoryIconColor = Colors.redAccent;
   static const Color dividerColor = grey;
   static const Color white = Colors.white;
@@ -19,5 +21,12 @@ class AppColor {
 
   static Color parseColorString(String colorString) {
     return Color(int.parse("0xFF$colorString"));
+  }
+
+  static Color brighterColor(String colorString) {
+    Color originalColor = Color(int.parse("0xFF$colorString"));
+    HSLColor hslColor = HSLColor.fromColor(originalColor);
+    HSLColor brighterHslColor = hslColor.withLightness(0.25);
+    return brighterHslColor.toColor();
   }
 }

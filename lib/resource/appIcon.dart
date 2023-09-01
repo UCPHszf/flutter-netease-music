@@ -10,4 +10,5 @@ class AppIcon {
   static const IconData songRecognition = Icons.keyboard_voice;
   static const IconData info = Icons.info_outline;
   static const IconData playCircle = Icons.play_circle_outline;
+  static const IconData playCircleFilled = Icons.play_circle_fill;
 }
