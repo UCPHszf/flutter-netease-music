@@ -17,13 +17,13 @@ NetEase Music implement in flutter 基于flutter实现的网易云音乐
     - banner and search bar in home page(首页的轮播图和搜索栏)
     - search page UI(搜索页面UI)
 
-![](/project_screenshot/search.png)
+<img height="400" src="/project_screenshot/search.png" width="200"/>
 
 8.30 SingerList 
     - singer list UI(歌手列表UI)
     - Try to keep login status, however, the api doesn't support it(尝试保持登录状态，但是api不支持)
 
-![](/project_screenshot/singerCategory.png)
+<img height="400" src="/project_screenshot/singerCategory.png" width="200"/>
 
 
 8.31 StyleList
@@ -33,7 +33,7 @@ NetEase Music implement in flutter 基于flutter实现的网易云音乐
     - style list UI progress: 100%(风格列表UI进度：100%)
     - style list to do: functionality of two scroll controllers(风格列表待做：两个滚动控制器的功能)
 
-![](/project_screenshot/styleCategory.png)
+<img height="400" src="/project_screenshot/styleCategory.png" width="200"/>
 
 
 
