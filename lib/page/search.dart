@@ -141,13 +141,14 @@ class _SearchPageState extends State<SearchPage> {
             slivers: [
               SliverToBoxAdapter(
                 child: SizedBox(
-                  height: 950,
+                  height: Dim.screenUtilOnVertical(1000),
                   child: ListView.separated(
                     padding: EdgeInsets.symmetric(
                       horizontal: Dim.screenUtilOnHorizontal(Dim.padding15),
                       vertical: Dim.screenUtilOnVertical(Dim.padding15),
                     ),
                     scrollDirection: Axis.horizontal,
+                    shrinkWrap: true,
                     itemBuilder: (BuildContext context, int index) {
                       if (index == 0) {
                         return const SearchPageTopList(
@@ -172,6 +173,29 @@ class _SearchPageState extends State<SearchPage> {
                   ),
                 ),
               ),
+              // SliverList.separated(
+              //   itemCount: loadedTopList.length + 1,
+              //   itemBuilder: (BuildContext context, int index) {
+              //     if (index == 0) {
+              //       return const SearchPageTopList(
+              //         listTitle: Constants.topListHotSearch,
+              //         topListType: TopListType.hotSearch,
+              //       );
+              //     } else {
+              //       return SearchPageTopList(
+              //         listTitle: loadedTopList[index - 1],
+              //         topListType: TopListType.songList,
+              //         topListId: pageSettingState
+              //             .allTopList[loadedTopList[index - 1]]!,
+              //       );
+              //     }
+              //   },
+              //   separatorBuilder: (BuildContext context, int index) {
+              //     return SizedBox(
+              //       width: Dim.screenUtilOnHorizontal(Dim.margin20),
+              //     );
+              //   },
+              // ),
             ],
           ),
         ),

@@ -75,6 +75,7 @@ class _SearchPageTopListState extends State<SearchPageTopList> {
         color: AppColor.white,
       ),
       child: Column(
+        mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Row(
@@ -98,66 +99,68 @@ class _SearchPageTopListState extends State<SearchPageTopList> {
             color: AppColor.dividerColor,
             height: 1,
           ),
-          ListView.builder(
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            itemCount: _topListItems.length,
-            itemBuilder: (context, index) {
-              //top 3 item index color should be red
-              Color? indexColor;
-              if (index < 3) {
-                indexColor = AppColor.red;
-              } else {
-                indexColor = AppColor.black;
-              }
-              return Container(
-                margin: EdgeInsets.symmetric(
-                  vertical: Dim.screenUtilOnVertical(Dim.margin10),
-                ),
-                child: Row(
-                  children: [
-                    Text(
-                      '${index + 1}',
-                      style: TextStyle(
-                        color: indexColor,
-                        fontSize: Dim.screenUtilOnSp(Dim.fontSize15),
-                      ),
-                    ),
-                    SizedBox(
-                      width: Dim.screenUtilOnHorizontal(Dim.margin10),
-                    ),
-                    Expanded(
-                      child: Text(
-                        _topListItems[index].text,
+          Expanded(
+            child: ListView.builder(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              itemCount: _topListItems.length,
+              itemBuilder: (context, index) {
+                //top 3 item index color should be red
+                Color? indexColor;
+                if (index < 3) {
+                  indexColor = AppColor.red;
+                } else {
+                  indexColor = AppColor.black;
+                }
+                return Container(
+                  margin: EdgeInsets.symmetric(
+                    vertical: Dim.screenUtilOnVertical(Dim.margin10),
+                  ),
+                  child: Row(
+                    children: [
+                      Text(
+                        '${index + 1}',
                         style: TextStyle(
-                          color: AppColor.black,
+                          color: indexColor,
                           fontSize: Dim.screenUtilOnSp(Dim.fontSize15),
-                          overflow: TextOverflow.ellipsis,
-                          fontWeight:
-                              index > 2 ? FontWeight.normal : FontWeight.bold,
                         ),
                       ),
-                    ),
-                    _topListItems[index].iconUrl != null
-                        ? Container(
-                            margin: EdgeInsets.only(
-                              left: Dim.screenUtilOnHorizontal(Dim.margin10),
-                            ),
-                            child: Image.network(
-                              _topListItems[index].iconUrl!,
-                              width: Dim.screenUtilOnHorizontal(20),
-                              height: Dim.screenUtilOnVertical(20),
-                              errorBuilder: (context, error, stackTrace) {
-                                logger.e(error);
-                                return Container();
-                              },
-                            ),
-                          )
-                        : Container(),
-                  ],
-                ),
-              );
-            },
+                      SizedBox(
+                        width: Dim.screenUtilOnHorizontal(Dim.margin10),
+                      ),
+                      Expanded(
+                        child: Text(
+                          _topListItems[index].text,
+                          style: TextStyle(
+                            color: AppColor.black,
+                            fontSize: Dim.screenUtilOnSp(Dim.fontSize15),
+                            overflow: TextOverflow.ellipsis,
+                            fontWeight:
+                                index > 2 ? FontWeight.normal : FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                      _topListItems[index].iconUrl != null
+                          ? Container(
+                              margin: EdgeInsets.only(
+                                left: Dim.screenUtilOnHorizontal(Dim.margin10),
+                              ),
+                              child: Image.network(
+                                _topListItems[index].iconUrl!,
+                                width: Dim.screenUtilOnHorizontal(20),
+                                height: Dim.screenUtilOnVertical(20),
+                                errorBuilder: (context, error, stackTrace) {
+                                  logger.e(error);
+                                  return Container();
+                                },
+                              ),
+                            )
+                          : Container(),
+                    ],
+                  ),
+                );
+              },
+            ),
           )
         ],
       ),

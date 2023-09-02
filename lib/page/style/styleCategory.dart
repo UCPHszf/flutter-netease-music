@@ -4,6 +4,7 @@ import 'package:cloud_music/util/NetworkRequest.dart';
 import 'package:cloud_music/widget/itemBlock/styleBlock.dart';
 import 'package:flutter/material.dart';
 import 'package:logger/logger.dart';
+import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
 import '../../resource/color.dart';
 import '../../resource/constants.dart';
@@ -48,8 +49,11 @@ class _StyleCategoryState extends State<StyleCategory> {
   // 顶部内容高度
   double topContentHeight = Dim.screenUtilOnVertical(180);
 
+  // scrollable positioned list控制器
+  late final ItemScrollController _itemScrollController;
+
   // 一级分类选中的index
-  int _fistLevelSelectedTagIndex = 0;
+  int _firstLevelSelectedTagIndex = 0;
 
   // 二级分类选中的index
   int _secondLevelSelectedTagIndex = 0;
@@ -59,14 +63,38 @@ class _StyleCategoryState extends State<StyleCategory> {
 
   final Logger _logger = getIt<Logger>();
 
+  // 我的风格偏好右侧顶部数据
   final List<MusicStyle> _stylePreferenceListBrief = [];
+
+  // 我的风格偏好右侧列表数据
   final List<MusicStyle> _stylePreferenceListDetail = [];
+
+  bool _fixedTabVisible = true;
+
+  void updateFixedTabVisibility() {
+    double currentOffset = _firstLevelTagScrollController.offset;
+    double selectedOffset = _firstLevelSelectedTagIndex * categoryItemHeight;
+    if (currentOffset >= selectedOffset) {
+      setState(() {
+        _fixedTabVisible = true;
+      });
+    } else {
+      setState(() {
+        _fixedTabVisible = false;
+      });
+    }
+  }
 
   @override
   void initState() {
-    super.initState();
     _firstLevelTagScrollController = ScrollController();
     _secondLevelTagScrollController = ScrollController();
+    _itemScrollController = ItemScrollController();
+
+    _firstLevelTagScrollController.addListener(() {
+      updateFixedTabVisibility();
+    });
+
     NetworkRequest.styleList().then((value) {
       setState(
         () {
@@ -86,6 +114,7 @@ class _StyleCategoryState extends State<StyleCategory> {
         _stylePreferenceListDetail.addAll(value.$2);
       });
     });
+    super.initState();
   }
 
   // 我的曲风偏好右侧顶部内容
@@ -131,7 +160,7 @@ class _StyleCategoryState extends State<StyleCategory> {
                 child: Text(
                   Constants.myStylePreference,
                   style: TextStyle(
-                    color: AppColor.grey,
+                    color: AppColor.styleTopContentTextShallow,
                     fontSize: Dim.screenUtilOnSp(Dim.fontSize12),
                   ),
                 ),
@@ -167,7 +196,7 @@ class _StyleCategoryState extends State<StyleCategory> {
 
   // 风格分类右侧顶部内容
   Widget buildStyleTopContent() {
-    MusicStyle style = _styleList[_fistLevelSelectedTagIndex];
+    MusicStyle style = _styleList[_firstLevelSelectedTagIndex];
     return SizedBox(
       height: topContentHeight,
       child: Column(
@@ -224,7 +253,7 @@ class _StyleCategoryState extends State<StyleCategory> {
                       right: Dim.screenUtilOnHorizontal(Dim.margin10),
                       bottom: Dim.screenUtilOnVertical(Dim.margin10),
                       child: GestureDetector(
-                        onTap: (){
+                        onTap: () {
                           // todo: 播放该风格下的歌曲
                         },
                         child: const Icon(
@@ -247,15 +276,22 @@ class _StyleCategoryState extends State<StyleCategory> {
                 vertical: Dim.screenUtilOnVertical(Dim.padding5),
               ),
               color: AppColor.parseColorString(style.colorDeep!),
+              // 二级分类
               child: ListView.builder(
                 controller: _secondLevelTagScrollController,
+                itemCount: MusicStyle.parseChildrenTags(style).length,
+                scrollDirection: Axis.horizontal,
                 itemBuilder: (context, index) {
                   return GestureDetector(
                     onTap: () {
                       setState(() {
                         _secondLevelSelectedTagIndex = index;
                       });
-
+                      _itemScrollController.scrollTo(
+                        index: _secondLevelSelectedTagIndex + 1,
+                        duration: const Duration(seconds: 1),
+                        curve: Curves.easeInOutCubic,
+                      );
                     },
                     child: Container(
                       padding: EdgeInsets.symmetric(
@@ -285,8 +321,6 @@ class _StyleCategoryState extends State<StyleCategory> {
                     ),
                   );
                 },
-                itemCount: MusicStyle.parseChildrenTags(style).length,
-                scrollDirection: Axis.horizontal,
               ),
             ),
           ),
@@ -328,75 +362,126 @@ class _StyleCategoryState extends State<StyleCategory> {
       body: SafeArea(
         child: Row(
           children: [
-            // 一级分类
+            // 左侧一级分类
             Expanded(
               flex: 1,
-              child: ListView.builder(
-                controller: _firstLevelTagScrollController,
-                itemCount: _styleList.length,
-                itemBuilder: (context, index) {
-                  return GestureDetector(
-                    onTap: () {
-                      setState(() {
-                        _fistLevelSelectedTagIndex = index;
-                        _secondLevelSelectedTagIndex = 0;
-                      });
+              child: Stack(
+                children: [
+                  ListView.builder(
+                    controller: _firstLevelTagScrollController,
+                    itemCount: _styleList.length,
+                    itemBuilder: (context, index) {
+                      return GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            _firstLevelTagScrollController.removeListener(() {
+                              updateFixedTabVisibility();
+                            });
+                            setState(() {
+                              _fixedTabVisible = false;
+                            });
+                            _firstLevelSelectedTagIndex = index;
+                            _firstLevelTagScrollController.addListener(() {
+                              updateFixedTabVisibility();
+                            });
+                            _secondLevelSelectedTagIndex = 0;
+                            if (_itemScrollController.isAttached) {
+                              _itemScrollController.jumpTo(index: 0);
+                            }
+                          });
+                        },
+                        child: Container(
+                          color: index == _firstLevelSelectedTagIndex
+                              ? AppColor.parseColorString(
+                                  _styleList[index].colorShallow!)
+                              : Colors.transparent,
+                          height: categoryItemHeight,
+                          child: Center(
+                            child: Text(
+                              _styleList[index].tagName!,
+                              style: TextStyle(
+                                fontSize: Dim.screenUtilOnSp(Dim.fontSize15),
+                                color: index == _firstLevelSelectedTagIndex
+                                    ? AppColor.parseColorString(
+                                        _styleList[index].colorDeep!)
+                                    : Colors.grey,
+                                fontWeight: index == _firstLevelSelectedTagIndex
+                                    ? FontWeight.bold
+                                    : FontWeight.normal,
+                              ),
+                            ),
+                          ),
+                        ),
+                      );
                     },
-                    child: Container(
-                      color: index == _fistLevelSelectedTagIndex
-                          ? AppColor.parseColorString(
-                              _styleList[index].colorShallow!)
-                          : Colors.transparent,
-                      height: categoryItemHeight,
-                      child: Center(
-                        child: Text(
-                          _styleList[index].tagName!,
-                          style: TextStyle(
-                            fontSize: Dim.screenUtilOnSp(Dim.fontSize15),
-                            color: index == _fistLevelSelectedTagIndex
-                                ? AppColor.parseColorString(
-                                    _styleList[index].colorDeep!)
-                                : Colors.grey,
-                            fontWeight: index == _fistLevelSelectedTagIndex
-                                ? FontWeight.bold
-                                : FontWeight.normal,
+                  ),
+                  Visibility(
+                    visible: _fixedTabVisible,
+                    child: Positioned(
+                      left: 0,
+                      top: 0,
+                      right: 0,
+                      child: Container(
+                        color: AppColor.parseColorString(
+                            _styleList[_firstLevelSelectedTagIndex]
+                                .colorShallow!),
+                        height: categoryItemHeight,
+                        child: Center(
+                          child: Text(
+                            _styleList[_firstLevelSelectedTagIndex].tagName!,
+                            style: TextStyle(
+                                fontSize: Dim.screenUtilOnSp(Dim.fontSize15),
+                                color: AppColor.parseColorString(
+                                    _styleList[_firstLevelSelectedTagIndex]
+                                        .colorDeep!),
+                                fontWeight: FontWeight.bold),
                           ),
                         ),
                       ),
                     ),
-                  );
-                },
-              ),
-            ),
-            Expanded(
-              flex: 3,
-              child: CustomScrollView(
-                physics: const BouncingScrollPhysics(),
-                scrollDirection: Axis.vertical,
-                slivers: [
-                  SliverToBoxAdapter(
-                    child: _fistLevelSelectedTagIndex == 0
-                        ? buildMyStylePreferenceTopContent()
-                        : buildStyleTopContent(),
-                  ),
-                  SliverList(
-                    delegate: SliverChildListDelegate(
-                      _fistLevelSelectedTagIndex == 0
-                          ? _stylePreferenceListDetail
-                              .map((e) => StyleBlock(
-                                    style: e,
-                                  ))
-                              .toList()
-                          : MusicStyle.parseChildrenTags(
-                                  _styleList[_fistLevelSelectedTagIndex])
-                              .map((e) => StyleBlock(
-                                    style: e,
-                                  ))
-                              .toList(),
-                    ),
                   ),
                 ],
               ),
+            ),
+            // 右侧内容
+            Expanded(
+              flex: 3,
+              child: _firstLevelSelectedTagIndex == 0
+                  ? Column(
+                      children: [
+                        buildMyStylePreferenceTopContent(),
+                        Expanded(
+                          child: ListView.builder(
+                            itemBuilder: (context, index) {
+                              return StyleBlock(
+                                style: _stylePreferenceListDetail[index],
+                              );
+                            },
+                            itemCount: _stylePreferenceListDetail.length,
+                            physics: const BouncingScrollPhysics(),
+                          ),
+                        ),
+                      ],
+                    )
+                  : ScrollablePositionedList.builder(
+                      physics: const AlwaysScrollableScrollPhysics(),
+                      itemCount: MusicStyle.parseChildrenTags(
+                                  _styleList[_firstLevelSelectedTagIndex])
+                              .length +
+                          1,
+                      itemScrollController: _itemScrollController,
+                      itemBuilder: (context, index) {
+                        if (index == 0) {
+                          return buildStyleTopContent();
+                        } else {
+                          return StyleBlock(
+                            style: MusicStyle.parseChildrenTags(
+                                    _styleList[_firstLevelSelectedTagIndex])[
+                                index - 1],
+                          );
+                        }
+                      },
+                    ),
             ),
           ],
         ),

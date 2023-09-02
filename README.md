@@ -35,6 +35,26 @@ NetEase Music implement in flutter 基于flutter实现的网易云音乐
 
 <img height="400" src="/project_screenshot/styleCategory.png" width="200"/>
 
+9.2 StyleList Controller
+    - left controller: 
+    requirement: 
+    this controller requires that when it's scroll to the offset that larger than the selected tag, 
+    the selected tag is expected to be fix at the top of the screen
+    (左侧控制器：该控制器要求当它滚动到大于选中标签的偏移量时，选中标签应固定在屏幕顶部)
+    idea: I first created a Positioned Container that displays the text of the selected tag with the 
+    same background color as the selected tag. Then, I implemented a listener for the scroll controller. 
+    When the scroll controller's offset becomes greater than that of the selected tag, the Positioned 
+    Container becomes visible; otherwise, it remains hidden.
+    Furthermore, when re-selecting the first-level tag, I remove the existing listener and add it again. 
+    This is necessary because the scroll controller's listener relies on the value of the selected tag index. 
+    When we update the selected tag index, the listener doesn't automatically update, so we remove and re-add 
+    it to ensure it functions correctly.
+    (实现思路：我首先创建了一个定位容器，该容器显示与选中标签相同背景颜色的选中标签的文本。然后，我为滚动控制器实现了一个监听器。
+    当滚动控制器的偏移量大于选中标签的偏移量时，定位容器变为可见；否则，它仍然隐藏。
+    此外，当重新选择一级标签时，我删除现有的侦听器并再次添加它。这是必要的，因为滚动控制器的侦听器依赖于选定标签索引的值。
+    当我们更新选定的标签索引时，侦听器不会自动更新，因此我们删除并重新添加它以确保其正确运行。)
+
+
 
 
 
