@@ -54,6 +54,17 @@ NetEase Music implement in flutter 基于flutter实现的网易云音乐
     此外，当重新选择一级标签时，我删除现有的侦听器并再次添加它。这是必要的，因为滚动控制器的侦听器依赖于选定标签索引的值。
     当我们更新选定的标签索引时，侦听器不会自动更新，因此我们删除并重新添加它以确保其正确运行。)
 
+9.7
+    - style detail(风格详情)
+        - As for the style detail page, I spent five days on the scroll effect of the header. However,
+        I can't reproduce it 100%(maybe implement 60%-70%). I'll back to this part when I have more experience.
+        (关于风格详情页，我花了五天时间来实现头部的滚动效果。但是，我无法100％地复制它（也许实现60％-70％）。当我有更多经验时，我会回到这一部分。)
+        - style detail total progress: 50% (风格详情总进度：50%)
+    - refactoring some code(重构一些代码)
+        - In search page, for each top list, replace the stateful widget with stateless widget(在搜索页面中，
+        对于每个顶部列表，将有状态的小部件替换为无状态的小部件)
+        - In some page, I adopted future builder to replace the stateful widget(在某些页面中，我采用了future builder来替换有状态的小部件)
+
 
 
 

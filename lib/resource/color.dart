@@ -23,10 +23,22 @@ class AppColor {
     return Color(int.parse("0xFF$colorString"));
   }
 
-  static Color brighterColor(String colorString) {
+  static Color brighterColor(String colorString, [double amount = 0.1]) {
+    assert(amount >= 0 && amount <= 1);
+
     Color originalColor = Color(int.parse("0xFF$colorString"));
-    HSLColor hslColor = HSLColor.fromColor(originalColor);
-    HSLColor brighterHslColor = hslColor.withLightness(0.25);
-    return brighterHslColor.toColor();
+    final hsl = HSLColor.fromColor(originalColor);
+    final hslLight =
+        hsl.withLightness((hsl.lightness + amount).clamp(0.0, 1.0));
+
+    return hslLight.toColor();
+  }
+
+  static Color darkerColor(String colorString, [double amount = 0.1]) {
+    assert(amount >= 0 && amount <= 1);
+    Color originalColor = Color(int.parse("0xFF$colorString"));
+    final hsl = HSLColor.fromColor(originalColor);
+    final hslDark = hsl.withLightness((hsl.lightness - amount).clamp(0.0, 1.0));
+    return hslDark.toColor();
   }
 }

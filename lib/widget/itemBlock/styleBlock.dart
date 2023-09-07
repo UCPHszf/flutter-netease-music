@@ -3,12 +3,23 @@ import 'package:cloud_music/resource/appIcon.dart';
 import 'package:cloud_music/resource/dim.dart';
 import 'package:flutter/material.dart';
 
+import '../../model/pageArgs.dart';
 import '../../resource/color.dart';
+import '../../resource/constants.dart';
 
 class StyleBlock extends StatelessWidget {
   final MusicStyle _style;
 
   const StyleBlock({super.key, required MusicStyle style}) : _style = style;
+
+  void navigatorToStyleDetailPage(BuildContext context, MusicStyle style) {
+    Navigator.of(context).pushNamed(
+      Constants.styleDetailPageRoute,
+      arguments: PageArgument(
+        args: {Constants.pageArgumentStyleId: style.tagId},
+      ),
+    );
+  }
 
   Widget childrenTags() {
     List<MusicStyle> tags = MusicStyle.parseChildrenTags(_style);
@@ -25,10 +36,12 @@ class StyleBlock extends StatelessWidget {
               vertical: Dim.screenUtilOnVertical(Dim.margin5),
             ),
             child: GestureDetector(
-              onTap: (){},
+              onTap: () {
+                navigatorToStyleDetailPage(context, tags[index]);
+              },
               child: ListTile(
                 title: Text(
-                  tags[index].tagName!,
+                  tags[index].tagName,
                   style: TextStyle(
                     fontSize: Dim.screenUtilOnSp(Dim.fontSize15),
                     color: AppColor.grey,
@@ -42,7 +55,9 @@ class StyleBlock extends StatelessWidget {
                   ),
                 ),
                 trailing: GestureDetector(
-                  onTap: () {},
+                  onTap: () {
+                    //todo:播放该风格的歌曲
+                  },
                   child: const Icon(
                     AppIcon.playCircle,
                     color: AppColor.grey,
@@ -65,10 +80,12 @@ class StyleBlock extends StatelessWidget {
       child: Column(
         children: [
           GestureDetector(
-            onTap: () {},
+            onTap: () {
+              navigatorToStyleDetailPage(context, _style);
+            },
             child: ListTile(
               title: Text(
-                _style.tagName!,
+                _style.tagName,
                 style: TextStyle(
                   fontSize: Dim.screenUtilOnSp(Dim.fontSize20),
                   fontWeight: FontWeight.bold,

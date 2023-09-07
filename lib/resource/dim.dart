@@ -8,8 +8,10 @@ class Dim {
   static const double padding15 = 15;
   static const double padding20 = 20;
   static const double padding30 = 30;
+  static const double styleDetailListPadding = padding20;
 
   static const int fontSize20 = 20;
+  static const int fontSize18 = 18;
   static const int fontSize15 = 15;
   static const int fontSize12 = 12;
 

@@ -8,6 +8,7 @@ import 'package:cloud_music/resource/enum.dart';
 import 'package:cloud_music/widget/customRoute.dart';
 import 'package:flutter/material.dart';
 import '../page/signIn.dart';
+import '../page/style/styleDetail.dart';
 
 class Routes {
   static dynamic route() {
@@ -33,6 +34,12 @@ class Routes {
       case Constants.styleCategoryPageRoute:
         return CustomRoute<bool>(
             builder: (BuildContext context) => const StyleCategory(),
+            transitionType: TransitionType.slide);
+      case Constants.styleDetailPageRoute:
+        final arguments = settings.arguments as PageArgument;
+        int styleId = arguments.args[Constants.pageArgumentStyleId];
+        return CustomRoute<bool>(
+            builder: (BuildContext context) => StyleDetail(styleId: styleId),
             transitionType: TransitionType.slide);
       default:
         return onUnknownRoute(settings);

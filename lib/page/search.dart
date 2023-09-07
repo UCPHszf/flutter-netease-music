@@ -3,12 +3,15 @@ import 'package:cloud_music/resource/color.dart';
 import 'package:cloud_music/resource/constants.dart';
 import 'package:cloud_music/resource/dim.dart';
 import 'package:cloud_music/resource/enum.dart';
+import 'package:cloud_music/widget/progressIndicator.dart';
 import 'package:cloud_music/widget/search/searchBar.dart';
 import 'package:flutter/material.dart';
 import 'package:logger/logger.dart';
 import 'package:provider/provider.dart';
 
+import '../model/song/topListSong.dart';
 import '../provider/pageSettingState.dart';
+import '../util/NetworkRequest.dart';
 import '../util/dependencies.dart';
 import '../widget/itemBlock/searchPageTopList.dart';
 import '../widget/search/subSearchCategory.dart';
@@ -36,8 +39,20 @@ class _SearchPageState extends State<SearchPage> {
 
   late final List<Widget> subSearchCategoryList;
   late final List<String> loadedTopList;
-  late PageSettingState pageSettingState;
+  late final PageSettingState pageSettingState;
   Logger logger = getIt<Logger>();
+
+  Future<List<List<TopListSong>>> getAllTopListData() async {
+    final List<Future<List<TopListSong>>> listOfFutures = [];
+    for (int i = 0; i < loadedTopList.length; i++) {
+      listOfFutures.add(NetworkRequest.topList(
+        topListType: TopListType.songList,
+        topListId: pageSettingState.allTopList[loadedTopList[i]],
+      ));
+    }
+    final result = await Future.wait(listOfFutures);
+    return result;
+  }
 
   @override
   void initState() {
@@ -68,7 +83,6 @@ class _SearchPageState extends State<SearchPage> {
         onTap: () {},
       ),
     ];
-
     pageSettingState = Provider.of<PageSettingState>(context, listen: false);
     loadedTopList = pageSettingState.searchPageTopList;
     loadedTopList.retainWhere(
@@ -78,133 +92,124 @@ class _SearchPageState extends State<SearchPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-          leading: Padding(
-            padding: EdgeInsets.symmetric(
-                horizontal: Dim.screenUtilOnHorizontal(Dim.padding15)),
-            child: BackButton(
-              onPressed: () {
-                Provider.of<SearchBarState>(context, listen: false).autoUpdate =
-                    true;
-                Navigator.pop(context);
-              },
-            ),
-          ),
-          actions: [
-            Padding(
-              padding: EdgeInsets.symmetric(
-                  horizontal: Dim.screenUtilOnHorizontal(Dim.padding15)),
-              child: Center(
-                child: GestureDetector(
-                  onTap: () {},
-                  child: Text(
-                    Constants.search,
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontSize: Dim.screenUtilOnSp(Dim.fontSize20),
-                    ),
+    return FutureBuilder(
+      future: Future.wait([
+        NetworkRequest.topList(topListType: TopListType.hotSearch),
+        getAllTopListData()
+      ]),
+      builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const AppProgressIndicator();
+        } else {
+          return Scaffold(
+            appBar: AppBar(
+                leading: Padding(
+                  padding: EdgeInsets.symmetric(
+                      horizontal: Dim.screenUtilOnHorizontal(Dim.padding15)),
+                  child: BackButton(
+                    onPressed: () {
+                      Provider.of<SearchBarState>(context, listen: false)
+                          .autoUpdate = true;
+                      Navigator.pop(context);
+                    },
                   ),
                 ),
-              ),
-            ),
-          ],
-          title: CustomSearchBar(
-            onTap: () {},
-            decorationColorGradientType: false,
-          ),
-          bottom: PreferredSize(
-            preferredSize: Size.fromHeight(
-              Dim.screenUtilOnVertical(40),
-            ),
-            child: Column(
-              children: [
-                IntrinsicHeight(
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: subSearchCategoryList,
-                  ),
-                ),
-                SizedBox(
-                  height: Dim.screenUtilOnVertical(5),
-                ),
-              ],
-            ),
-          )),
-      body: SafeArea(
-        child: Padding(
-          padding: EdgeInsets.symmetric(
-            vertical: Dim.screenUtilOnVertical(0),
-          ),
-          child: CustomScrollView(
-            scrollDirection: Axis.vertical,
-            slivers: [
-              SliverToBoxAdapter(
-                child: SizedBox(
-                  height: Dim.screenUtilOnVertical(1000),
-                  child: ListView.separated(
+                actions: [
+                  Padding(
                     padding: EdgeInsets.symmetric(
-                      horizontal: Dim.screenUtilOnHorizontal(Dim.padding15),
-                      vertical: Dim.screenUtilOnVertical(Dim.padding15),
+                        horizontal: Dim.screenUtilOnHorizontal(Dim.padding15)),
+                    child: Center(
+                      child: GestureDetector(
+                        onTap: () {},
+                        child: Text(
+                          Constants.search,
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontSize: Dim.screenUtilOnSp(Dim.fontSize20),
+                          ),
+                        ),
+                      ),
                     ),
-                    scrollDirection: Axis.horizontal,
-                    shrinkWrap: true,
-                    itemBuilder: (BuildContext context, int index) {
-                      if (index == 0) {
-                        return const SearchPageTopList(
-                          listTitle: Constants.topListHotSearch,
-                          topListType: TopListType.hotSearch,
-                        );
-                      } else {
-                        return SearchPageTopList(
-                          listTitle: loadedTopList[index - 1],
-                          topListType: TopListType.songList,
-                          topListId: pageSettingState
-                              .allTopList[loadedTopList[index - 1]]!,
-                        );
-                      }
-                    },
-                    separatorBuilder: (BuildContext context, int index) {
-                      return SizedBox(
-                        width: Dim.screenUtilOnHorizontal(Dim.margin20),
-                      );
-                    },
-                    itemCount: loadedTopList.length + 1,
                   ),
+                ],
+                title: CustomSearchBar(
+                  onTap: () {},
+                  decorationColorGradientType: false,
+                ),
+                bottom: PreferredSize(
+                  preferredSize: Size.fromHeight(
+                    Dim.screenUtilOnVertical(40),
+                  ),
+                  child: Column(
+                    children: [
+                      IntrinsicHeight(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: subSearchCategoryList,
+                        ),
+                      ),
+                      SizedBox(
+                        height: Dim.screenUtilOnVertical(5),
+                      ),
+                    ],
+                  ),
+                )),
+            body: SafeArea(
+              child: Padding(
+                padding: EdgeInsets.symmetric(
+                  vertical: Dim.screenUtilOnVertical(0),
+                ),
+                child: CustomScrollView(
+                  scrollDirection: Axis.vertical,
+                  slivers: [
+                    SliverToBoxAdapter(
+                      child: SizedBox(
+                        height: Dim.screenUtilOnVertical(1000),
+                        child: ListView.separated(
+                          padding: EdgeInsets.symmetric(
+                            horizontal:
+                                Dim.screenUtilOnHorizontal(Dim.padding15),
+                            vertical: Dim.screenUtilOnVertical(Dim.padding15),
+                          ),
+                          scrollDirection: Axis.horizontal,
+                          shrinkWrap: true,
+                          itemBuilder: (BuildContext context, int index) {
+                            if (index == 0) {
+                              return SearchPageTopList(
+                                  listTitle: Constants.topListHotSearch,
+                                  data: snapshot.data[0]);
+                            } else {
+                              return SearchPageTopList(
+                                listTitle: loadedTopList[index - 1],
+                                data: snapshot.data[1][index - 1].length >=
+                                        pageSettingState.searchPageTopListLimit
+                                    ? snapshot.data[1][index - 1].sublist(0,
+                                        pageSettingState.searchPageTopListLimit)
+                                    : snapshot.data[1][index - 1],
+                              );
+                            }
+                          },
+                          separatorBuilder: (BuildContext context, int index) {
+                            return SizedBox(
+                              width: Dim.screenUtilOnHorizontal(Dim.margin20),
+                            );
+                          },
+                          itemCount: loadedTopList.length + 1,
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ),
-              // SliverList.separated(
-              //   itemCount: loadedTopList.length + 1,
-              //   itemBuilder: (BuildContext context, int index) {
-              //     if (index == 0) {
-              //       return const SearchPageTopList(
-              //         listTitle: Constants.topListHotSearch,
-              //         topListType: TopListType.hotSearch,
-              //       );
-              //     } else {
-              //       return SearchPageTopList(
-              //         listTitle: loadedTopList[index - 1],
-              //         topListType: TopListType.songList,
-              //         topListId: pageSettingState
-              //             .allTopList[loadedTopList[index - 1]]!,
-              //       );
-              //     }
-              //   },
-              //   separatorBuilder: (BuildContext context, int index) {
-              //     return SizedBox(
-              //       width: Dim.screenUtilOnHorizontal(Dim.margin20),
-              //     );
-              //   },
-              // ),
-            ],
-          ),
-        ),
-      ),
-      // bottomNavigationBar: SafeArea(
-      //   child: Container(
-      //     height: 50,
-      //   ),
-      // ),
+            ),
+            // bottomNavigationBar: SafeArea(
+            //   child: Container(
+            //     height: 50,
+            //   ),
+            // ),
+          );
+        }
+      },
     );
   }
 }

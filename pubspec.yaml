@@ -24,6 +24,7 @@ dependencies:
   logger: ^2.0.1
   card_swiper: ^3.0.1
   scrollable_positioned_list: ^0.3.8
+  sliver_tools: ^0.2.12
 
 dev_dependencies:
   flutter_test:

@@ -16,19 +16,19 @@ class Artist {
   final int? _albumSize;
   final int? _musicSize;
   final int? _mvSize;
-  final bool _blacklist;
+  final bool? _blacklist;
   final bool? _gender;
   final int? _provinceCode;
   final int? _cityCode;
   final String? _nickname;
-  bool _followed;
+  bool? _followed;
   final int? _userId;
 
   int? get videoCount => _videoCount;
 
   String? get identifyImgUrl => _identifyImgUrl;
 
-  bool get followed => _followed;
+  bool? get followed => _followed;
 
   int? get provinceCode => _provinceCode;
 
@@ -38,7 +38,7 @@ class Artist {
 
   int? get cityCode => _cityCode;
 
-  bool get blacklist => _blacklist;
+  bool? get blacklist => _blacklist;
 
   String? get briefDesc => _briefDesc;
 
@@ -70,7 +70,7 @@ class Artist {
 
   bool? get isVip => _isVip;
 
-  set followed(bool followed) {
+  set followed(bool? followed) {
     _followed = followed;
   }
 
@@ -91,12 +91,12 @@ class Artist {
       int? albumSize,
       int? musicSize,
       int? mvSize,
-      required bool blacklist,
+      bool? blacklist,
       bool? gender,
       int? provinceCode,
       int? cityCode,
       String? nickname,
-      required bool followed,
+      bool? followed,
       int? userid})
       : _avatarUrl = avatarUrl,
         _albumSize = albumSize,
@@ -166,5 +166,10 @@ class Artist {
           : null,
       videoCount: json['artist']['videoCount'],
     );
+  }
+
+  factory Artist.fromSongArtistList(Map<String, dynamic> json) {
+    return Artist._internal(
+        artistid: json['id'], name: json['name'], alias: json['alias']);
   }
 }

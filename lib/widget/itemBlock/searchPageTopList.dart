@@ -3,64 +3,27 @@ import 'package:cloud_music/util/NetworkRequest.dart';
 import 'package:flutter/material.dart';
 import 'package:logger/logger.dart';
 import 'package:provider/provider.dart';
-
 import '../../model/song/topListSong.dart';
 import '../../provider/pageSettingState.dart';
 import '../../resource/color.dart';
-import '../../resource/enum.dart';
 import '../../util/dependencies.dart';
 
-class SearchPageTopList extends StatefulWidget {
-  const SearchPageTopList({
+class SearchPageTopList extends StatelessWidget {
+  SearchPageTopList({
     Key? key,
-    Widget? actions,
     required String listTitle,
-    required TopListType topListType,
-    int? topListId,
-  })  : _actions = actions,
-        _listTitle = listTitle,
-        _topListType = topListType,
-        _topListId = topListId,
+    Widget? actions,
+    List<TopListSong>? data,
+  })  : _listTitle = listTitle,
+        _data = data,
+        _actions = actions,
         super(key: key);
 
   final Widget? _actions;
   final String _listTitle;
-  final TopListType _topListType;
-  final int? _topListId;
+  final List<TopListSong>? _data;
 
-  @override
-  State<StatefulWidget> createState() => _SearchPageTopListState();
-}
-
-class _SearchPageTopListState extends State<SearchPageTopList> {
-  List<TopListSong> _topListItems = [];
   Logger logger = getIt<Logger>();
-
-  @override
-  void initState() {
-    super.initState();
-    NetworkRequest.topList(widget._topListType, widget._topListId).then(
-      (value) => {
-        if (mounted)
-          {
-            setState(
-              () {
-                //according to limit
-                _topListItems = value.sublist(
-                  0,
-                  value.length >
-                          context
-                              .read<PageSettingState>()
-                              .searchPageTopListLimit
-                      ? context.read<PageSettingState>().searchPageTopListLimit
-                      : value.length,
-                );
-              },
-            )
-          }
-      },
-    );
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -85,14 +48,14 @@ class _SearchPageTopListState extends State<SearchPageTopList> {
                   bottom: Dim.screenUtilOnVertical(Dim.margin10),
                 ),
                 child: Text(
-                  widget._listTitle,
+                  _listTitle,
                   style: TextStyle(
                     fontSize: Dim.screenUtilOnSp(Dim.fontSize20),
                     fontWeight: FontWeight.bold,
                   ),
                 ),
               ),
-              widget._actions ?? Container(),
+              _actions ?? Container(),
             ],
           ),
           const Divider(
@@ -103,7 +66,7 @@ class _SearchPageTopListState extends State<SearchPageTopList> {
             child: ListView.builder(
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
-              itemCount: _topListItems.length,
+              itemCount: _data!.length,
               itemBuilder: (context, index) {
                 //top 3 item index color should be red
                 Color? indexColor;
@@ -130,7 +93,7 @@ class _SearchPageTopListState extends State<SearchPageTopList> {
                       ),
                       Expanded(
                         child: Text(
-                          _topListItems[index].text,
+                          _data![index].text,
                           style: TextStyle(
                             color: AppColor.black,
                             fontSize: Dim.screenUtilOnSp(Dim.fontSize15),
@@ -140,13 +103,13 @@ class _SearchPageTopListState extends State<SearchPageTopList> {
                           ),
                         ),
                       ),
-                      _topListItems[index].iconUrl != null
+                      _data![index].iconUrl != null
                           ? Container(
                               margin: EdgeInsets.only(
                                 left: Dim.screenUtilOnHorizontal(Dim.margin10),
                               ),
                               child: Image.network(
-                                _topListItems[index].iconUrl!,
+                                _data![index].iconUrl!,
                                 width: Dim.screenUtilOnHorizontal(20),
                                 height: Dim.screenUtilOnVertical(20),
                                 errorBuilder: (context, error, stackTrace) {

@@ -102,7 +102,7 @@ class _TopListSingerItemState extends State<TopListSingerItem> {
             ),
             child: Center(
               child: Text(
-                artist != null && artist!.followed ? "√已关注" : "+ 关注",
+                artist != null && artist!.followed! ? "已关注" : "+关注",
                 style: TextStyle(
                   color: trailingColor,
                   fontSize: Dim.screenUtilOnSp(Dim.fontSize12),

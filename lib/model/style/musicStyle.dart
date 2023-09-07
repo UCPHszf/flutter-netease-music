@@ -1,6 +1,8 @@
+import 'package:cloud_music/model/style/styleTemplateTextContent.dart';
+
 class MusicStyle {
-  final int? _tagId;
-  final String? _tagName;
+  final int _tagId;
+  final String _tagName;
   final String? _enName;
   final int? _level;
   final String? _showText;
@@ -10,24 +12,40 @@ class MusicStyle {
   final String? _colorDeep;
   final String? _colorShallow;
   final List<dynamic>? _childrenTags;
+
+  // for style preference
   final String? _ratio;
 
-  int? get tagId => _tagId;
+  // for style detail
+  final String? _songNum;
+  final String? _artistNum;
+  final StyleTemplateTextContent? _professionalReviews;
+  final StyleTemplateTextContent? _tagPortrait;
+  final List<dynamic>? _cover;
+  final String? _desc;
+  final String? _parentNames;
 
-  MusicStyle._internal(
-      {int? tagId,
-      String? ratio,
-      String? tagName,
-      String? enName,
-      int? level,
-      String? showText,
-      String? picUrl,
-      String? link,
-      List<dynamic>? tabs,
-      String? colorDeep,
-      String? colorShallow,
-      List<dynamic>? childrenTags})
-      : _tagId = tagId,
+  MusicStyle._internal({
+    required int tagId,
+    String? ratio,
+    required String tagName,
+    String? enName,
+    int? level,
+    String? showText,
+    String? picUrl,
+    String? link,
+    List<dynamic>? tabs,
+    String? colorDeep,
+    String? colorShallow,
+    List<dynamic>? childrenTags,
+    String? songNum,
+    String? artistNum,
+    StyleTemplateTextContent? professionalReviews,
+    StyleTemplateTextContent? tagPortrait,
+    List<dynamic>? cover,
+    String? desc,
+    String? parentNames,
+  })  : _tagId = tagId,
         _tagName = tagName,
         _enName = enName,
         _level = level,
@@ -38,7 +56,14 @@ class MusicStyle {
         _colorDeep = colorDeep,
         _colorShallow = colorShallow,
         _childrenTags = childrenTags,
-        _ratio = ratio;
+        _ratio = ratio,
+        _songNum = songNum,
+        _artistNum = artistNum,
+        _professionalReviews = professionalReviews,
+        _tagPortrait = tagPortrait,
+        _cover = cover,
+        _desc = desc,
+        _parentNames = parentNames;
 
   factory MusicStyle.fromJson(Map<String, dynamic> json) {
     return MusicStyle._internal(
@@ -53,7 +78,6 @@ class MusicStyle {
       colorDeep: json['colorDeep'],
       colorShallow: json['colorShallow'],
       childrenTags: json['childrenTags'],
-      ratio: null,
     );
   }
 
@@ -61,16 +85,31 @@ class MusicStyle {
     return MusicStyle._internal(
       tagId: json['tagId'],
       tagName: json['tagName'],
-      enName: null,
-      level: null,
-      showText: null,
       picUrl: json['picUrl'],
-      link: null,
-      tabs: null,
-      colorDeep: null,
-      colorShallow: null,
-      childrenTags: null,
       ratio: json['ratio'],
+    );
+  }
+
+  factory MusicStyle.fromStyleDetail(Map<String, dynamic> json) {
+    return MusicStyle._internal(
+      tagId: json['tagId'],
+      enName: json['enName'],
+      tagName: json['name'],
+      songNum: json['songNum'],
+      artistNum: json['artistNum'],
+      professionalReviews: json['professionalReviews'] != null
+          ? StyleTemplateTextContent.fromJson(json['professionalReviews'])
+          : null,
+      tagPortrait: json['tagPortrait'] != null
+          ? StyleTemplateTextContent.fromJson(json['tagPortrait'])
+          : null,
+      cover: json['cover'],
+      colorDeep: json['colorDeep'],
+      colorShallow: json['colorShallow'],
+      desc: json['desc'],
+      parentNames: json['parentNames'],
+      level: json['level'],
+      tabs: json['tabs'],
     );
   }
 
@@ -84,7 +123,7 @@ class MusicStyle {
     return childrenTags;
   }
 
-  String? get tagName => _tagName;
+  String get tagName => _tagName;
 
   List<dynamic>? get childrenTags => _childrenTags;
 
@@ -106,8 +145,19 @@ class MusicStyle {
 
   String? get ratio => _ratio;
 
-  @override
-  String toString() {
-    return 'MusicStyle{_tagId: $_tagId, _tagName: $_tagName, _enName: $_enName, _level: $_level, _showText: $_showText, _picUrl: $_picUrl, _link: $_link, _tabs: $_tabs, _colorDeep: $_colorDeep, _colorShallow: $_colorShallow, _childrenTags: $_childrenTags, _ratio: $_ratio}';
-  }
+  int get tagId => _tagId;
+
+  StyleTemplateTextContent? get tagPortrait => _tagPortrait;
+
+  StyleTemplateTextContent? get professionalReviews => _professionalReviews;
+
+  String? get artistNum => _artistNum;
+
+  String? get songNum => _songNum;
+
+  List<dynamic>? get cover => _cover;
+
+  String? get desc => _desc;
+
+  String? get parentNames => _parentNames;
 }

@@ -36,6 +36,10 @@ class Constants {
   static const String urlStyleList = "/style/list";
   static const String urlStylePreference = "/style/preference";
   static const String urlStyleDetail = "/style/detail";
+  static const String urlStyleSinger = "/style/artist";
+  static const String urlStyleSong = "/style/song";
+  static const String urlStyleAlbum = "/style/album";
+  static const String urlStylePlayList = "/style/playlist";
 
   static const String qrcodeKeyGenerateFailedInfo =
       "Failed to generate QRCode key";
@@ -55,6 +59,9 @@ class Constants {
   static const String styleCategory = "曲风分类";
   static const String styleDataTip = "根据你的听歌记录生成,每周日更新";
   static const String myStylePreference = "我的曲风偏好";
+  static const String playAll = "播放全部";
+  static const String sortByHotString = "最热";
+  static const String sortByTimeString = "最新";
 
   static const int singerTypeMale = 1;
   static const int singerTypeFemale = 2;
@@ -65,9 +72,13 @@ class Constants {
   static const int singerAreaEUNA = 96;
   static const int singerAreaOther = 0;
 
+  static const int sortByTime = 1;
+  static const int sortByHot = 0;
+
   static const String songRecognition = "识曲";
   static const String singer = "歌手";
   static const String musicStyle = "曲风";
+  static const String styleListen = "听听看";
 
   static const String topListHotSearch = "热搜榜";
   static const String hotSinger = "热门歌手";
@@ -95,4 +106,7 @@ class Constants {
   static const String searchPageRoute = "/search";
   static const String singerCategoryPageRoute = "/singerCategory";
   static const String styleCategoryPageRoute = "/styleCategory";
+  static const String styleDetailPageRoute = "/styleDetail";
+
+  static const String pageArgumentStyleId = "styleId";
 }
