@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:ffi';
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cloud_music/model/song/album.dart';
 import 'package:cloud_music/model/song/cursorInfo.dart';
 import 'package:cloud_music/model/song/song.dart';
 import 'package:cloud_music/model/song/topListSong.dart';
@@ -539,6 +540,37 @@ class NetworkRequest {
         if (data["code"] == Constants.statusCodeSuccess) {
           for (var element in data["data"]["songs"]) {
             result.add(Song.fromBrief(element as Map<String, dynamic>));
+          }
+        }
+        CursorInfo cursorInfo =
+            CursorInfo.fromJson(data["data"]["page"] as Map<String, dynamic>);
+        return (cursorInfo, result);
+      },
+    );
+  }
+
+  //获取曲风专辑
+  static Future<(CursorInfo, List<Album>)> styleAlbum(
+      {required int tagId,
+      int size = 20,
+      cursor = 0,
+      sortType = Constants.sortByHot}) {
+    Dio dio = getDio();
+    final String url = dio.options.baseUrl + Constants.urlStyleAlbum;
+    final Map<String, dynamic> params = {
+      "tagId": tagId,
+      "size": size,
+      "cursor": cursor,
+      "sort": sortType,
+    };
+    final String buildUrl = NetworkRequest.buildUrl(url, params);
+    return dio.get(buildUrl).then(
+      (response) {
+        final Map<String, dynamic> data = response.data as Map<String, dynamic>;
+        List<Album> result = [];
+        if (data["code"] == Constants.statusCodeSuccess) {
+          for (var element in data["data"]["albums"]) {
+            result.add(Album.fromAlbumBrief(element as Map<String, dynamic>));
           }
         }
         CursorInfo cursorInfo =

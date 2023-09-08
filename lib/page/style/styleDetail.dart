@@ -6,13 +6,17 @@ import 'package:cloud_music/resource/constants.dart';
 import 'package:cloud_music/resource/dim.dart';
 import 'package:cloud_music/util/NetworkRequest.dart';
 import 'package:cloud_music/util/dependencies.dart';
-import 'package:cloud_music/widget/clipper/bottomClipper.dart';
+import 'package:cloud_music/widget/clipper/styleAlbumItemTopClipper.dart';
+import 'package:cloud_music/widget/clipper/styleDetailCoverClipper.dart';
+import 'package:cloud_music/widget/listItem/listDataSort.dart';
+import 'package:cloud_music/widget/listItem/styleAlbumItem.dart';
 import 'package:cloud_music/widget/listItem/styleSongItem.dart';
 import 'package:cloud_music/widget/progressIndicator.dart';
 import 'package:flutter/material.dart';
 import 'package:logger/logger.dart';
 import 'package:sliver_tools/sliver_tools.dart';
 
+import '../../model/song/album.dart';
 import '../../model/song/song.dart';
 
 class StyleDetail extends StatefulWidget {
@@ -26,18 +30,35 @@ class StyleDetail extends StatefulWidget {
   }
 }
 
-class _StyleDetailState extends State<StyleDetail> {
+class _StyleDetailState extends State<StyleDetail>
+    with AutomaticKeepAliveClientMixin<StyleDetail> {
+  @override
+  bool get wantKeepAlive => true;
+
+  // 曲风详情网络请求
   late final Future future;
 
   final Logger _logger = getIt<Logger>();
 
   late final ScrollController _scrollController;
 
+  // appbar height
   double _appbarHeight = 240;
+
+  // appbar collapsed height
   final double _appBarCollapsedHeight = 65;
+
+  // 顶部图片使用clip裁剪高度
   double _cutHeight = 20;
+
+  final int dataTopBarHeight = 22;
+  final double dataTopBarWidgetMargin = 3.5;
+
   bool _appbarCollapsed = false;
   bool songDataLoading = true;
+  bool albumDataLoading = true;
+  bool playlistDataLoading = false;
+  bool artistDataLoading = false;
 
   final List<String> styleDataType = ["歌曲", "专辑", "歌单", "艺人"];
   int songSortType = Constants.sortByHot;
@@ -45,6 +66,9 @@ class _StyleDetailState extends State<StyleDetail> {
 
   final List<Song> styleSongs = [];
   CursorInfo? songCursorInfo;
+
+  final List<Album> styleAlbums = [];
+  CursorInfo? albumCursorInfo;
 
   final double customScrollViewHorizontalPadding =
       Dim.screenUtilOnHorizontal(Dim.styleDetailListPadding);
@@ -57,7 +81,9 @@ class _StyleDetailState extends State<StyleDetail> {
     });
     NetworkRequest.styleSong(tagId: widget.styleId, sortType: songSortType)
         .then((value) {
+      // cursor info of song
       CursorInfo cursorInfo = value.$1;
+      // song list
       List<Song> songs = value.$2;
       setState(() {
         styleSongs.addAll(songs);
@@ -67,6 +93,28 @@ class _StyleDetailState extends State<StyleDetail> {
       });
       setState(() {
         songDataLoading = false;
+      });
+    });
+  }
+
+  void loadAlbumData() {
+    setState(() {
+      albumDataLoading = true;
+    });
+    NetworkRequest.styleAlbum(tagId: widget.styleId, sortType: albumSortType)
+        .then((value) {
+      // cursor info of album
+      CursorInfo cursorInfo = value.$1;
+      // album list
+      List<Album> albums = value.$2;
+      setState(() {
+        styleAlbums.addAll(albums);
+      });
+      setState(() {
+        albumCursorInfo = cursorInfo;
+      });
+      setState(() {
+        albumDataLoading = false;
       });
     });
   }
@@ -104,7 +152,9 @@ class _StyleDetailState extends State<StyleDetail> {
           });
         }
       });
+    // song as the default tab
     loadSongData();
+    loadAlbumData();
     super.initState();
   }
 
@@ -150,145 +200,197 @@ class _StyleDetailState extends State<StyleDetail> {
     );
   }
 
-  //曲风-歌曲
-  Widget styleSongList() {
-    int topBarHeight = 22;
-    double topBarWidgetMargin = 3.5;
+  // 曲风-歌曲
+  List<Widget> styleSong() {
     Widget marginWidget = SizedBox(
-      width: Dim.screenUtilOnHorizontal(topBarWidgetMargin),
+      width: Dim.screenUtilOnHorizontal(dataTopBarWidgetMargin),
     );
+    return [
+      SliverPadding(
+        padding: EdgeInsets.symmetric(
+          horizontal: customScrollViewHorizontalPadding,
+          vertical: customScrollViewVerticalPadding,
+        ),
+        sliver: SliverToBoxAdapter(
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              GestureDetector(
+                onTap: () {
+                  //todo: play all
+                },
+                child: SizedBox(
+                  height: Dim.screenUtilOnVertical(dataTopBarHeight),
+                  child: Row(
+                    children: [
+                      const Icon(
+                        AppIcon.playCircleFilled,
+                        color: AppColor.red,
+                      ),
+                      marginWidget,
+                      Text(
+                        Constants.playAll,
+                        style: TextStyle(
+                          color: AppColor.black,
+                          fontWeight: FontWeight.bold,
+                          fontSize: Dim.screenUtilOnSp(Dim.fontSize18),
+                        ),
+                      ),
+                      marginWidget,
+                      Align(
+                        alignment: Alignment.bottomCenter,
+                        child: Text(
+                          songCursorInfo == null
+                              ? ""
+                              : "(${songCursorInfo?.total})",
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            color: AppColor.grey,
+                            fontSize: Dim.screenUtilOnSp(Dim.fontSize12),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              // 排序方式
+              ListDataSort(
+                sortVariable: songSortType,
+                onSelectSortByHot: () {
+                  setState(() {
+                    songSortType = Constants.sortByHot;
+                    styleSongs.clear();
+                    loadSongData();
+                  });
+                },
+                onSelectSortByTime: () {
+                  setState(() {
+                    songSortType = Constants.sortByTime;
+                    styleSongs.clear();
+                    loadSongData();
+                  });
+                },
+              ),
+            ],
+          ),
+        ),
+      ),
+      !songDataLoading
+          ? SliverList.builder(
+              itemBuilder: (BuildContext context, int index) {
+                return StyleSongItem(
+                  song: styleSongs[index],
+                );
+              },
+              itemCount: styleSongs.length,
+            )
+          : const SliverFillRemaining(
+              child: AppProgressIndicator(),
+            ),
+    ];
+  }
+
+  List<Widget> styleAlbum() {
+    return [
+      SliverPadding(
+        padding: EdgeInsets.symmetric(
+          horizontal: customScrollViewHorizontalPadding,
+          vertical: customScrollViewVerticalPadding,
+        ),
+        sliver: SliverToBoxAdapter(
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                "按${albumSortType == Constants.sortByHot ? "最热" : "最新"}排序",
+                style: TextStyle(
+                  color: AppColor.black,
+                  fontSize: Dim.screenUtilOnSp(Dim.fontSize15),
+                ),
+              ),
+              ListDataSort(
+                sortVariable: albumSortType,
+                onSelectSortByHot: () {
+                  setState(() {
+                    albumSortType = Constants.sortByHot;
+                    styleAlbums.clear();
+                    loadAlbumData();
+                  });
+                },
+                onSelectSortByTime: () {
+                  setState(() {
+                    albumSortType = Constants.sortByTime;
+                    styleAlbums.clear();
+                    loadAlbumData();
+                  });
+                },
+              ),
+            ],
+          ),
+        ),
+      ),
+      !albumDataLoading
+          ? SliverList.builder(
+              itemBuilder: (BuildContext context, int index) {
+                return StyleAlbumItem(
+                  album: styleAlbums[index],
+                );
+              },
+              itemCount: styleAlbums.length,
+            )
+          : const SliverFillRemaining(
+              child: AppProgressIndicator(),
+            ),
+    ];
+  }
+
+  List<Widget> stylePlayList() {
+    return [
+      SliverToBoxAdapter(
+        child: Center(
+          child: Container(
+            margin: EdgeInsets.symmetric(
+              vertical: 50,
+            ),
+            height: 200,
+            width: 200,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                ClipPath(
+                  clipper: StyleAlbumItemTopClipper(),
+                  child: Container(
+                    height: 40,
+                    color: Colors.yellow,
+                  ),
+                ),
+                Container(
+                  height: 160,
+                  color: Colors.blue,
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    ];
+  }
+
+  //曲风列表通用
+  Widget styleList(List<Widget> widget) {
     return Container(
       color: Colors.white,
       child: CustomScrollView(
         physics: const ClampingScrollPhysics(),
-        slivers: [
-          SliverPadding(
-            padding: EdgeInsets.symmetric(
-              horizontal: customScrollViewHorizontalPadding,
-              vertical: customScrollViewVerticalPadding,
-            ),
-            sliver: SliverToBoxAdapter(
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  GestureDetector(
-                    onTap: () {
-                      //todo: play all
-                    },
-                    child: SizedBox(
-                      height: Dim.screenUtilOnVertical(topBarHeight),
-                      child: Row(
-                        children: [
-                          const Icon(
-                            AppIcon.playCircleFilled,
-                            color: AppColor.red,
-                          ),
-                          marginWidget,
-                          Text(
-                            Constants.playAll,
-                            style: TextStyle(
-                              color: AppColor.black,
-                              fontWeight: FontWeight.bold,
-                              fontSize: Dim.screenUtilOnSp(Dim.fontSize18),
-                            ),
-                          ),
-                          marginWidget,
-                          Align(
-                            alignment: Alignment.bottomCenter,
-                            child: Text(
-                              songCursorInfo == null
-                                  ? ""
-                                  : "(${songCursorInfo?.total})",
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                color: AppColor.grey,
-                                fontSize: Dim.screenUtilOnSp(Dim.fontSize12),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  // 排序方式
-                  IntrinsicHeight(
-                    child: Row(
-                      children: [
-                        GestureDetector(
-                          onTap: () {
-                            setState(() {
-                              styleSongs.clear();
-                              songSortType = Constants.sortByHot;
-                              loadSongData();
-                            });
-                          },
-                          child: Text(
-                            Constants.sortByHotString,
-                            style: TextStyle(
-                              color: songSortType == Constants.sortByHot
-                                  ? AppColor.black
-                                  : AppColor.grey,
-                              fontWeight: songSortType == Constants.sortByHot
-                                  ? FontWeight.bold
-                                  : FontWeight.normal,
-                            ),
-                          ),
-                        ),
-                        marginWidget,
-                        VerticalDivider(
-                          width: Dim.screenUtilOnHorizontal(5),
-                          color: AppColor.grey,
-                        ),
-                        marginWidget,
-                        SizedBox(
-                          width: Dim.screenUtilOnHorizontal(topBarWidgetMargin),
-                        ),
-                        GestureDetector(
-                          onTap: () {
-                            setState(() {
-                              songSortType = Constants.sortByTime;
-                              styleSongs.clear();
-                              loadSongData();
-                            });
-                          },
-                          child: Text(
-                            Constants.sortByTimeString,
-                            style: TextStyle(
-                              color: songSortType == Constants.sortByTime
-                                  ? AppColor.black
-                                  : AppColor.grey,
-                              fontWeight: songSortType == Constants.sortByTime
-                                  ? FontWeight.bold
-                                  : FontWeight.normal,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-          !songDataLoading
-              ? SliverList.builder(
-                  itemBuilder: (BuildContext context, int index) {
-                    return StyleSongItem(
-                      song: styleSongs[index],
-                    );
-                  },
-                  itemCount: styleSongs.length,
-                )
-              : const SliverFillRemaining(
-                  child: AppProgressIndicator(),
-                ),
-        ],
+        slivers: widget,
       ),
     );
   }
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return FutureBuilder(
       future: future,
       builder: (BuildContext context, AsyncSnapshot snapshot) {
@@ -356,7 +458,7 @@ class _StyleDetailState extends State<StyleDetail> {
                                   collapseMode: CollapseMode.pin,
                                   stretchModes: const [],
                                   background: ClipPath(
-                                    clipper: BottomClipper(
+                                    clipper: StyleDetailCoverClipper(
                                       cutHeight: _cutHeight,
                                     ),
                                     child: Container(
@@ -381,9 +483,9 @@ class _StyleDetailState extends State<StyleDetail> {
                 },
                 body: TabBarView(
                   children: [
-                    styleSongList(),
-                    Container(),
-                    Container(),
+                    styleList(styleSong()),
+                    styleList(styleAlbum()),
+                    styleList(stylePlayList()),
                     Container(),
                   ],
                 ),

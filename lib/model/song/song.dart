@@ -188,7 +188,7 @@ class Song {
       id: json['id'],
       name: json['name'],
       artists: json['ar'],
-      album: Album.fromBrief(json['al']),
+      album: Album.fromSongAlbum(json['al']),
     );
   }
 
@@ -201,7 +201,7 @@ class Song {
       alias: json['alia'],
       popularity: json['pop'],
       fee: json['fee'],
-      album: json['al'] != null ? Album.fromBrief(json['al']) : null,
+      album: json['al'] != null ? Album.fromSongAlbum(json['al']) : null,
       version: json['version'],
       single: json['single'],
       publishTime: json['publishTime'],

@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 
-class BottomClipper extends CustomClipper<Path> {
+class StyleDetailCoverClipper extends CustomClipper<Path> {
 
   final double cutHeight;
 
-  BottomClipper({this.cutHeight = 30});
+  StyleDetailCoverClipper({this.cutHeight = 30});
 
   @override
   Path getClip(Size size) {

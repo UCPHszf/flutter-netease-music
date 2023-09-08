@@ -65,6 +65,11 @@ NetEase Music implement in flutter 基于flutter实现的网易云音乐
         对于每个顶部列表，将有状态的小部件替换为无状态的小部件)
         - In some page, I adopted future builder to replace the stateful widget(在某些页面中，我采用了future builder来替换有状态的小部件)
 
+9.8 
+    -style detail(风格详情)
+        - song list UI(歌曲列表UI)
+        - album list UI(专辑列表UI)
+
 
 
 

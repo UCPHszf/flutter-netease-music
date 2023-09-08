@@ -168,7 +168,7 @@ class Artist {
     );
   }
 
-  factory Artist.fromSongArtistList(Map<String, dynamic> json) {
+  factory Artist.fromBrief(Map<String, dynamic> json) {
     return Artist._internal(
         artistid: json['id'], name: json['name'], alias: json['alias']);
   }

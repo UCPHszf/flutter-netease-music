@@ -13,7 +13,7 @@ class StyleSongItem extends StatelessWidget {
     List<Artist> artist = [];
     if (song.artists != null) {
       for (var item in song.artists!) {
-        artist.add(Artist.fromSongArtistList(item));
+        artist.add(Artist.fromBrief(item));
       }
     }
     String artistName = artist.isNotEmpty ? artist[0].name : "";
@@ -42,14 +42,18 @@ class StyleSongItem extends StatelessWidget {
             child: song.album == null
                 ? Image.asset(
                     "assets/images/default_album.jpg",
-                    width: Dim.screenUtilOnSp(50),
-                    height: Dim.screenUtilOnSp(50),
+                    width: Dim.screenUtilOnHorizontal(
+                        Dim.styleDetailDataItemImageWidth),
+                    height: Dim.screenUtilOnVertical(
+                        Dim.styleDetailDataItemImageHeight),
                     fit: BoxFit.cover,
                   )
                 : Image.network(
                     song.album!.picUrl!,
-                    width: Dim.screenUtilOnSp(50),
-                    height: Dim.screenUtilOnSp(50),
+                    width: Dim.screenUtilOnHorizontal(
+                        Dim.styleDetailDataItemImageWidth),
+                    height: Dim.screenUtilOnVertical(
+                        Dim.styleDetailDataItemImageHeight),
                     fit: BoxFit.cover,
                   ),
           ),

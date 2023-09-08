@@ -31,10 +31,15 @@ class Dim {
 
   static num searchPageTopListWidth = 280;
 
+  static const double margin2 = 2;
   static const double margin5 = 5;
   static const double margin10 = 10;
   static const double margin15 = 15;
   static const double margin20 = 20;
+
+  static const styleDetailDataItemImageHeight = 50;
+  static const styleDetailDataItemImageWidth = 50;
+  static const styleDetailDataItemTopClipperHeight = 10;
 
   static double screenUtilOnVertical(num value) {
     return ScreenUtil().setHeight(value);
