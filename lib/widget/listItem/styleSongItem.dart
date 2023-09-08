@@ -1,6 +1,7 @@
 import 'package:cloud_music/model/user/artist.dart';
 import 'package:cloud_music/resource/color.dart';
 import 'package:cloud_music/resource/dim.dart';
+import 'package:cloud_music/widget/image/ClipRRectImage.dart';
 import 'package:flutter/material.dart';
 
 import '../../model/song/song.dart';
@@ -23,61 +24,41 @@ class StyleSongItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      // color: Colors.red,
-      margin: EdgeInsets.symmetric(
-        vertical: Dim.screenUtilOnVertical(Dim.margin5),
-      ),
-      child: GestureDetector(
-        onTap: () {
-          //todo : play song
-        },
-        child: ListTile(
-          contentPadding: EdgeInsets.symmetric(
-            horizontal: Dim.screenUtilOnHorizontal(Dim.styleDetailListPadding),
+    return GestureDetector(
+      onTap: () {
+        //todo : play song
+      },
+      child: ListTile(
+        contentPadding: EdgeInsets.symmetric(
+          horizontal: Dim.screenUtilOnHorizontal(Dim.styleDetailListPadding),
+        ),
+        // rectangle image
+        leading: ClipRRectImage(
+          url: song.album?.picUrl,
+          width: Dim.screenUtilOnHorizontal(Dim.styleDetailDataItemImageWidth),
+          height: Dim.screenUtilOnVertical(Dim.styleDetailDataItemImageHeight),
+        ),
+        title: Text(
+          song.name,
+          style: TextStyle(
+            fontSize: Dim.screenUtilOnSp(Dim.fontSize15),
+            color: Colors.black,
+            overflow: TextOverflow.ellipsis,
           ),
-          // rectangle image
-          leading: ClipRRect(
-            borderRadius: BorderRadius.circular(Dim.screenUtilOnSp(10)),
-            child: song.album == null
-                ? Image.asset(
-                    "assets/images/default_album.jpg",
-                    width: Dim.screenUtilOnHorizontal(
-                        Dim.styleDetailDataItemImageWidth),
-                    height: Dim.screenUtilOnVertical(
-                        Dim.styleDetailDataItemImageHeight),
-                    fit: BoxFit.cover,
-                  )
-                : Image.network(
-                    song.album!.picUrl!,
-                    width: Dim.screenUtilOnHorizontal(
-                        Dim.styleDetailDataItemImageWidth),
-                    height: Dim.screenUtilOnVertical(
-                        Dim.styleDetailDataItemImageHeight),
-                    fit: BoxFit.cover,
-                  ),
+        ),
+        subtitle: Text(
+          _getSubTitle(),
+          style: TextStyle(
+            fontSize: Dim.screenUtilOnSp(Dim.fontSize12),
+            color: AppColor.grey,
+            overflow: TextOverflow.ellipsis,
           ),
-          title: Text(
-            song.name,
-            style: TextStyle(
-              fontSize: Dim.screenUtilOnSp(Dim.fontSize15),
-              color: Colors.black,
-            ),
-          ),
-          subtitle: Text(
-            _getSubTitle(),
-            style: TextStyle(
-              fontSize: Dim.screenUtilOnSp(Dim.fontSize12),
-              color: AppColor.grey,
-              overflow: TextOverflow.ellipsis,
-            ),
-          ),
-          trailing: GestureDetector(
-            onTap: () {
-              //todo:more operation
-            },
-            child: const Icon(Icons.more_vert, size: 20),
-          ),
+        ),
+        trailing: GestureDetector(
+          onTap: () {
+            //todo:more operation
+          },
+          child: const Icon(Icons.more_vert, size: 20),
         ),
       ),
     );

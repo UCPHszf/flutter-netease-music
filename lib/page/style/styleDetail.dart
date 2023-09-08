@@ -10,6 +10,7 @@ import 'package:cloud_music/widget/clipper/styleAlbumItemTopClipper.dart';
 import 'package:cloud_music/widget/clipper/styleDetailCoverClipper.dart';
 import 'package:cloud_music/widget/listItem/listDataSort.dart';
 import 'package:cloud_music/widget/listItem/styleAlbumItem.dart';
+import 'package:cloud_music/widget/listItem/stylePlayListItem.dart';
 import 'package:cloud_music/widget/listItem/styleSongItem.dart';
 import 'package:cloud_music/widget/progressIndicator.dart';
 import 'package:flutter/material.dart';
@@ -17,7 +18,9 @@ import 'package:logger/logger.dart';
 import 'package:sliver_tools/sliver_tools.dart';
 
 import '../../model/song/album.dart';
+import '../../model/song/playlist.dart';
 import '../../model/song/song.dart';
+import '../../model/user/artist.dart';
 
 class StyleDetail extends StatefulWidget {
   const StyleDetail({Key? key, required this.styleId}) : super(key: key);
@@ -57,7 +60,7 @@ class _StyleDetailState extends State<StyleDetail>
   bool _appbarCollapsed = false;
   bool songDataLoading = true;
   bool albumDataLoading = true;
-  bool playlistDataLoading = false;
+  bool playlistDataLoading = true;
   bool artistDataLoading = false;
 
   final List<String> styleDataType = ["歌曲", "专辑", "歌单", "艺人"];
@@ -69,6 +72,12 @@ class _StyleDetailState extends State<StyleDetail>
 
   final List<Album> styleAlbums = [];
   CursorInfo? albumCursorInfo;
+
+  final List<PlayList> stylePlaylist = [];
+  CursorInfo? playlistCursorInfo;
+
+  final List<Artist> styleArtist = [];
+  CursorInfo? artistCursorInfo;
 
   final double customScrollViewHorizontalPadding =
       Dim.screenUtilOnHorizontal(Dim.styleDetailListPadding);
@@ -119,6 +128,27 @@ class _StyleDetailState extends State<StyleDetail>
     });
   }
 
+  void loadPlayListData() {
+    setState(() {
+      playlistDataLoading = true;
+    });
+    NetworkRequest.stylePlaylist(tagId: widget.styleId).then((value) {
+      // cursor info of album
+      CursorInfo cursorInfo = value.$1;
+      // album list
+      List<PlayList> playLists = value.$2;
+      setState(() {
+        stylePlaylist.addAll(playLists);
+      });
+      setState(() {
+        playlistCursorInfo = cursorInfo;
+      });
+      setState(() {
+        playlistDataLoading = false;
+      });
+    });
+  }
+
   @override
   void initState() {
     future = NetworkRequest.styleDetail(widget.styleId);
@@ -155,6 +185,7 @@ class _StyleDetailState extends State<StyleDetail>
     // song as the default tab
     loadSongData();
     loadAlbumData();
+    loadPlayListData();
     super.initState();
   }
 
@@ -347,33 +378,18 @@ class _StyleDetailState extends State<StyleDetail>
 
   List<Widget> stylePlayList() {
     return [
-      SliverToBoxAdapter(
-        child: Center(
-          child: Container(
-            margin: EdgeInsets.symmetric(
-              vertical: 50,
+      playlistDataLoading
+          ? const SliverFillRemaining(
+              child: AppProgressIndicator(),
+            )
+          : SliverList.builder(
+              itemBuilder: (BuildContext context, int index) {
+                return StylePlayListItem(
+                  playList: stylePlaylist[index],
+                );
+              },
+              itemCount: stylePlaylist.length,
             ),
-            height: 200,
-            width: 200,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                ClipPath(
-                  clipper: StyleAlbumItemTopClipper(),
-                  child: Container(
-                    height: 40,
-                    color: Colors.yellow,
-                  ),
-                ),
-                Container(
-                  height: 160,
-                  color: Colors.blue,
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
     ];
   }
 

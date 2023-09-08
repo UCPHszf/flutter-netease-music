@@ -69,6 +69,7 @@ NetEase Music implement in flutter 基于flutter实现的网易云音乐
     -style detail(风格详情)
         - song list UI(歌曲列表UI)
         - album list UI(专辑列表UI)
+        - playlist list UI(歌单列表UI)
 
 
 
