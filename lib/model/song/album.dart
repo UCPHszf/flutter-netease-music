@@ -6,7 +6,7 @@ class Album {
   final String? _picUrl;
   final bool? _onSale;
   final int? _publishTime;
-  Artist? _artist;
+  ArtistProfile? _artist;
 
   Album._internal({
     required String name,
@@ -14,7 +14,7 @@ class Album {
     String? picUrl,
     bool? onSale,
     int? publishTime,
-    Artist? artist,
+    ArtistProfile? artist,
   })  : _name = name,
         _id = id,
         _picUrl = picUrl,
@@ -32,7 +32,7 @@ class Album {
 
   int? get publishTime => _publishTime;
 
-  Artist? get artist => _artist;
+  ArtistProfile? get artist => _artist;
 
   String getDateOfPublish() {
     if (_publishTime == null) {
@@ -42,21 +42,24 @@ class Album {
     return "${date.year}-${date.month}-${date.day}";
   }
 
-  factory Album.fromSongAlbum(Map<String, dynamic> json) {
+  static T? _getJsonValue<T>(Map<String, dynamic> json, String key) {
+    if (json.containsKey(key)) {
+      return json[key];
+    }
+    return null;
+  }
+
+  factory Album.fromJson(Map<String, dynamic> json) {
     return Album._internal(
-      name: json['name'],
-      id: json['id'],
-      picUrl: json['picUrl'],
+      name: _getJsonValue(json, 'name'),
+      id: _getJsonValue(json, 'id'),
+      picUrl: _getJsonValue(json, 'picUrl'),
+      onSale: _getJsonValue(json, 'onSale'),
+      publishTime: _getJsonValue(json, 'publishTime'),
+      artist: json.containsKey('artist')
+          ? ArtistProfile.fromJson(json['artist'])
+          : null,
     );
   }
 
-  factory Album.fromAlbumBrief(Map<String, dynamic> json) {
-    return Album._internal(
-      name: json['name'],
-      id: json['id'],
-      picUrl: json['picUrl'],
-      publishTime: json['publishTime'],
-      artist: Artist.fromBrief(json['artist']),
-    );
-  }
 }

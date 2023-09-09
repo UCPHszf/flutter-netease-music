@@ -65,51 +65,38 @@ class MusicStyle {
         _desc = desc,
         _parentNames = parentNames;
 
+  static T? _getJsonValue<T>(Map<String, dynamic> json, String key) {
+    if (json.containsKey(key)) {
+      return json[key];
+    }
+    return null;
+  }
+
   factory MusicStyle.fromJson(Map<String, dynamic> json) {
     return MusicStyle._internal(
-      tagId: json['tagId'],
-      tagName: json['tagName'],
-      enName: json['enName'],
-      level: json['level'],
-      showText: json['showText'],
-      picUrl: json['picUrl'],
-      link: json['link'],
-      tabs: json['tabs'],
-      colorDeep: json['colorDeep'],
-      colorShallow: json['colorShallow'],
-      childrenTags: json['childrenTags'],
-    );
-  }
-
-  factory MusicStyle.fromStylePreference(Map<String, dynamic> json) {
-    return MusicStyle._internal(
-      tagId: json['tagId'],
-      tagName: json['tagName'],
-      picUrl: json['picUrl'],
-      ratio: json['ratio'],
-    );
-  }
-
-  factory MusicStyle.fromStyleDetail(Map<String, dynamic> json) {
-    return MusicStyle._internal(
-      tagId: json['tagId'],
-      enName: json['enName'],
-      tagName: json['name'],
-      songNum: json['songNum'],
-      artistNum: json['artistNum'],
-      professionalReviews: json['professionalReviews'] != null
+      tagId: _getJsonValue(json, 'tagId'),
+      tagName: _getJsonValue(json, 'tagName'),
+      enName: _getJsonValue(json, 'enName'),
+      level: _getJsonValue(json, 'level'),
+      showText: _getJsonValue(json, 'showText'),
+      picUrl: _getJsonValue(json, 'picUrl'),
+      link: _getJsonValue(json, 'link'),
+      tabs: _getJsonValue(json, 'tabs'),
+      colorDeep: _getJsonValue(json, 'colorDeep'),
+      colorShallow: _getJsonValue(json, 'colorShallow'),
+      childrenTags: _getJsonValue(json, 'childrenTags'),
+      ratio: _getJsonValue(json, 'ratio'),
+      songNum: _getJsonValue(json, 'songNum'),
+      artistNum: _getJsonValue(json, 'artistNum'),
+      professionalReviews: _getJsonValue(json, 'professionalReviews') != null
           ? StyleTemplateTextContent.fromJson(json['professionalReviews'])
           : null,
-      tagPortrait: json['tagPortrait'] != null
+      tagPortrait: _getJsonValue(json, 'tagPortrait') != null
           ? StyleTemplateTextContent.fromJson(json['tagPortrait'])
           : null,
-      cover: json['cover'],
-      colorDeep: json['colorDeep'],
-      colorShallow: json['colorShallow'],
-      desc: json['desc'],
-      parentNames: json['parentNames'],
-      level: json['level'],
-      tabs: json['tabs'],
+      cover: _getJsonValue(json, 'cover'),
+      desc: _getJsonValue(json, 'desc'),
+      parentNames: _getJsonValue(json, 'parentNames'),
     );
   }
 

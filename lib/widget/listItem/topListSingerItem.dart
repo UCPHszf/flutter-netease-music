@@ -1,10 +1,7 @@
 import 'package:cloud_music/model/user/topListSinger.dart';
 import 'package:cloud_music/resource/dim.dart';
 import 'package:cloud_music/util/NetworkRequest.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-
 import '../../model/user/artist.dart';
 
 class TopListSingerItem extends StatefulWidget {
@@ -102,7 +99,11 @@ class _TopListSingerItemState extends State<TopListSingerItem> {
             ),
             child: Center(
               child: Text(
-                artist != null && artist!.followed! ? "已关注" : "+关注",
+                artist != null &&
+                        artist?.userProfile != null &&
+                        artist!.userProfile!.followed!
+                    ? "已关注"
+                    : "+关注",
                 style: TextStyle(
                   color: trailingColor,
                   fontSize: Dim.screenUtilOnSp(Dim.fontSize12),

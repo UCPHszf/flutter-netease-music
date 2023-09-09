@@ -6,7 +6,6 @@ import 'package:cloud_music/resource/constants.dart';
 import 'package:cloud_music/resource/dim.dart';
 import 'package:cloud_music/util/NetworkRequest.dart';
 import 'package:cloud_music/util/dependencies.dart';
-import 'package:cloud_music/widget/clipper/styleAlbumItemTopClipper.dart';
 import 'package:cloud_music/widget/clipper/styleDetailCoverClipper.dart';
 import 'package:cloud_music/widget/listItem/listDataSort.dart';
 import 'package:cloud_music/widget/listItem/styleAlbumItem.dart';
@@ -20,7 +19,6 @@ import 'package:sliver_tools/sliver_tools.dart';
 import '../../model/song/album.dart';
 import '../../model/song/playlist.dart';
 import '../../model/song/song.dart';
-import '../../model/user/artist.dart';
 
 class StyleDetail extends StatefulWidget {
   const StyleDetail({Key? key, required this.styleId}) : super(key: key);
@@ -68,16 +66,10 @@ class _StyleDetailState extends State<StyleDetail>
   int albumSortType = Constants.sortByHot;
 
   final List<Song> styleSongs = [];
-  CursorInfo? songCursorInfo;
-
   final List<Album> styleAlbums = [];
-  CursorInfo? albumCursorInfo;
-
   final List<PlayList> stylePlaylist = [];
-  CursorInfo? playlistCursorInfo;
 
-  final List<Artist> styleArtist = [];
-  CursorInfo? artistCursorInfo;
+  List<CursorInfo?> styleCursorInfo = List.filled(4, null);
 
   final double customScrollViewHorizontalPadding =
       Dim.screenUtilOnHorizontal(Dim.styleDetailListPadding);
@@ -98,7 +90,7 @@ class _StyleDetailState extends State<StyleDetail>
         styleSongs.addAll(songs);
       });
       setState(() {
-        songCursorInfo = cursorInfo;
+        styleCursorInfo[0] = cursorInfo;
       });
       setState(() {
         songDataLoading = false;
@@ -120,7 +112,7 @@ class _StyleDetailState extends State<StyleDetail>
         styleAlbums.addAll(albums);
       });
       setState(() {
-        albumCursorInfo = cursorInfo;
+        styleCursorInfo[1] = cursorInfo;
       });
       setState(() {
         albumDataLoading = false;
@@ -141,7 +133,7 @@ class _StyleDetailState extends State<StyleDetail>
         stylePlaylist.addAll(playLists);
       });
       setState(() {
-        playlistCursorInfo = cursorInfo;
+        styleCursorInfo[2] = cursorInfo;
       });
       setState(() {
         playlistDataLoading = false;
@@ -271,9 +263,9 @@ class _StyleDetailState extends State<StyleDetail>
                       Align(
                         alignment: Alignment.bottomCenter,
                         child: Text(
-                          songCursorInfo == null
+                          styleCursorInfo[0] == null
                               ? ""
-                              : "(${songCursorInfo?.total})",
+                              : "(${styleCursorInfo[0]?.total})",
                           textAlign: TextAlign.center,
                           style: TextStyle(
                             color: AppColor.grey,
@@ -451,8 +443,10 @@ class _StyleDetailState extends State<StyleDetail>
                                   indicatorWeight: 2,
                                   tabs: styleDataType
                                       .map(
-                                        (e) => Tab(
-                                          text: e,
+                                        (e) => GestureDetector(
+                                          child: Tab(
+                                            text: e,
+                                          ),
                                         ),
                                       )
                                       .toList(),

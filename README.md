@@ -71,6 +71,15 @@ NetEase Music implement in flutter 基于flutter实现的网易云音乐
         - album list UI(专辑列表UI)
         - playlist list UI(歌单列表UI)
 
+9.9
+    - refactor data class(重构数据类)
+      - I wrote multi factory method for a data class before since I don't know how to handle the case
+        that some field not exist. However,it turns out to be a bad idea. I add a static method
+        _getJsonValue to check if the field exist. If it does, return the value; otherwise, return null.
+        (我以前为数据类编写了多个工厂方法，因为我不知道如何处理某些字段不存在的情况。但是，事实证明这是一个坏主意。
+        我添加了一个静态方法_getJsonValue来检查字段是否存在。如果是，则返回该值；否则，返回null。)
+
+
 
 
 

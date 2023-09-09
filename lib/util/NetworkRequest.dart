@@ -487,7 +487,7 @@ class NetworkRequest {
           return result;
         } else {
           for (var element in data["data"]["tagPreferenceVos"]) {
-            result.$1.add(MusicStyle.fromStylePreference(element));
+            result.$1.add(MusicStyle.fromJson(element));
           }
           for (var element in data["data"]["tags"]) {
             result.$2.add(MusicStyle.fromJson(element));
@@ -510,7 +510,7 @@ class NetworkRequest {
       (response) {
         final Map<String, dynamic> data = response.data as Map<String, dynamic>;
         if (data["code"] == Constants.statusCodeSuccess) {
-          return MusicStyle.fromStyleDetail(
+          return MusicStyle.fromJson(
               data["data"] as Map<String, dynamic>);
         } else {
           return null;
@@ -540,7 +540,7 @@ class NetworkRequest {
         List<Song> result = [];
         if (data["code"] == Constants.statusCodeSuccess) {
           for (var element in data["data"]["songs"]) {
-            result.add(Song.fromBrief(element as Map<String, dynamic>));
+            result.add(Song.fromJson(element as Map<String, dynamic>));
           }
         }
         CursorInfo cursorInfo =
@@ -571,7 +571,7 @@ class NetworkRequest {
         List<Album> result = [];
         if (data["code"] == Constants.statusCodeSuccess) {
           for (var element in data["data"]["albums"]) {
-            result.add(Album.fromAlbumBrief(element as Map<String, dynamic>));
+            result.add(Album.fromJson(element as Map<String, dynamic>));
           }
         }
         CursorInfo cursorInfo =

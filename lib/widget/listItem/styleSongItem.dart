@@ -11,12 +11,7 @@ class StyleSongItem extends StatelessWidget {
   final Song song;
 
   String _getSubTitle() {
-    List<Artist> artist = [];
-    if (song.artists != null) {
-      for (var item in song.artists!) {
-        artist.add(Artist.fromBrief(item));
-      }
-    }
+    List<ArtistProfile> artist = song.artists ?? [];
     String artistName = artist.isNotEmpty ? artist[0].name : "";
     String albumName = song.album != null ? song.album!.name : "";
     return "$artistName - $albumName";

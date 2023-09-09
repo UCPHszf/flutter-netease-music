@@ -1,13 +1,120 @@
 // artist detail
+import 'package:cloud_music/model/user/user.dart';
+
+class ExpertIdentify {
+  final int _expertIdentityId;
+  final String? _expertIdentityName;
+  final int? _expertIdentityCount;
+
+  int get expertIdentityId => _expertIdentityId;
+
+  String? get expertIdentityName => _expertIdentityName;
+
+  int? get expertIdentityCount => _expertIdentityCount;
+
+  ExpertIdentify._internal(
+      {required int expertIdentityId,
+      String? expertIdentityName,
+      int? expertIdentityCount})
+      : _expertIdentityId = expertIdentityId,
+        _expertIdentityName = expertIdentityName,
+        _expertIdentityCount = expertIdentityCount;
+
+  factory ExpertIdentify.fromJson(Map<String, dynamic> json) {
+    return ExpertIdentify._internal(
+      expertIdentityId: json['expertIdentityId'],
+      expertIdentityName: json['expertIdentityName'],
+      expertIdentityCount: json['expertIdentityCount'],
+    );
+  }
+}
+
 class Artist {
   final int? _videoCount;
-  final bool? _isVip;
-  final String? _identifyImgUrl;
-  final String? _identifyImgDesc;
-  final String? _coverUrl;
-  final int _artistid;
+  final UserIdentify? _identify;
+  final ArtistProfile? _profile;
+  final bool? _blacklist;
+  final int? _preferShow;
+  final bool? _showPriMsg;
+  final List<ExpertIdentify>? _expertIdentifyTags;
+  final int? _eventCount;
+  final UserProfile? _userProfile;
+
+  int? get videoCount => _videoCount;
+
+  UserIdentify? get identify => _identify;
+
+  ArtistProfile? get profile => _profile;
+
+  bool? get blacklist => _blacklist;
+
+  int? get preferShow => _preferShow;
+
+  bool? get showPriMsg => _showPriMsg;
+
+  List<ExpertIdentify>? get expertIdentifyTags => _expertIdentifyTags;
+
+  int? get eventCount => _eventCount;
+
+  UserProfile? get userProfile => _userProfile;
+
+  Artist._internal(
+      {int? videoCount,
+      UserIdentify? identify,
+      ArtistProfile? profile,
+      bool? blacklist,
+      int? preferShow,
+      bool? showPriMsg,
+      List<ExpertIdentify>? expertIdentifyTags,
+      int? eventCount,
+      UserProfile? userProfile})
+      : _videoCount = videoCount,
+        _identify = identify,
+        _profile = profile,
+        _blacklist = blacklist,
+        _preferShow = preferShow,
+        _showPriMsg = showPriMsg,
+        _expertIdentifyTags = expertIdentifyTags,
+        _eventCount = eventCount,
+        _userProfile = userProfile;
+
+  static T? _getJsonValue<T>(Map<String, dynamic> json, String key) {
+    if (json.containsKey(key)) {
+      return json[key];
+    }
+    return null;
+  }
+
+  factory Artist.fromJson(Map<String, dynamic> json) {
+    return Artist._internal(
+      videoCount: _getJsonValue(json, 'videoCount'),
+      identify: json['identify'] != null
+          ? UserIdentify.fromJson(json['identify'])
+          : null,
+      profile: json['profile'] != null
+          ? ArtistProfile.fromJson(json['profile'])
+          : null,
+      blacklist: _getJsonValue(json, 'blacklist'),
+      preferShow: _getJsonValue(json, 'preferShow'),
+      showPriMsg: _getJsonValue(json, 'showPriMsg'),
+      expertIdentifyTags: json['expertIdentifyTags'] != null
+          ? (json['expertIdentifyTags'] as List<dynamic>)
+              .map((e) => ExpertIdentify.fromJson(e))
+              .toList()
+          : null,
+      eventCount: _getJsonValue(json, 'eventCount'),
+      userProfile: json['userProfile'] != null
+          ? UserProfile.fromJson(json['userProfile'])
+          : null,
+    );
+  }
+}
+
+class ArtistProfile {
+  final int _id;
+  final String? _cover;
+  final String? _avatar;
   final String _name;
-  final String? _avatarUrl;
   final List<dynamic>? _transnames;
   final List<dynamic>? _alias;
   final List<dynamic>? _identifyTag;
@@ -16,160 +123,79 @@ class Artist {
   final int? _albumSize;
   final int? _musicSize;
   final int? _mvSize;
-  final bool? _blacklist;
-  final bool? _gender;
-  final int? _provinceCode;
-  final int? _cityCode;
-  final String? _nickname;
-  bool? _followed;
-  final int? _userId;
 
-  int? get videoCount => _videoCount;
+  int get id => _id;
 
-  String? get identifyImgUrl => _identifyImgUrl;
+  String? get cover => _cover;
 
-  bool? get followed => _followed;
-
-  int? get provinceCode => _provinceCode;
-
-  int? get albumSize => _albumSize;
-
-  List<dynamic>? get identities => _identities;
-
-  int? get cityCode => _cityCode;
-
-  bool? get blacklist => _blacklist;
-
-  String? get briefDesc => _briefDesc;
-
-  List<dynamic>? get identifyTag => _identifyTag;
-
-  String? get avatarUrl => _avatarUrl;
-
-  int get artistid => _artistid;
-
-  String? get identifyImgDesc => _identifyImgDesc;
-
-  int? get userId => _userId;
-
-  String? get nickname => _nickname;
-
-  bool? get gender => _gender;
-
-  int? get mvSize => _mvSize;
-
-  int? get musicSize => _musicSize;
-
-  List<dynamic>? get alias => _alias;
-
-  List<dynamic>? get transnames => _transnames;
+  String? get avatar => _avatar;
 
   String get name => _name;
 
-  String? get coverUrl => _coverUrl;
+  List<dynamic>? get transnames => _transnames;
 
-  bool? get isVip => _isVip;
+  List<dynamic>? get alias => _alias;
 
-  set followed(bool? followed) {
-    _followed = followed;
-  }
+  List<dynamic>? get identifyTag => _identifyTag;
 
-  Artist._internal(
-      {int? videoCount,
-      bool? isVip,
-      String? identifyImgUrl,
-      String? identifyImgDesc,
-      String? coverUrl,
-      required int artistid,
-      required String name,
-      String? avatarUrl,
-      List<dynamic>? transnames,
-      List<dynamic>? alias,
-      List<dynamic>? identifyTag,
-      List<dynamic>? identities,
-      String? briefDesc,
-      int? albumSize,
-      int? musicSize,
-      int? mvSize,
-      bool? blacklist,
-      bool? gender,
-      int? provinceCode,
-      int? cityCode,
-      String? nickname,
-      bool? followed,
-      int? userid})
-      : _avatarUrl = avatarUrl,
-        _albumSize = albumSize,
+  List<dynamic>? get identities => _identities;
+
+  String? get briefDesc => _briefDesc;
+
+  int? get albumSize => _albumSize;
+
+  int? get musicSize => _musicSize;
+
+  int? get mvSize => _mvSize;
+
+  ArtistProfile._internal({
+    required int id,
+    String? cover,
+    String? avatar,
+    required String name,
+    List<dynamic>? transnames,
+    List<dynamic>? alias,
+    List<dynamic>? identifyTag,
+    List<dynamic>? identities,
+    String? briefDesc,
+    int? albumSize,
+    int? musicSize,
+    int? mvSize,
+  })  : _id = id,
+        _cover = cover,
+        _avatar = avatar,
+        _name = name,
+        _transnames = transnames,
         _alias = alias,
-        _artistid = artistid,
-        _blacklist = blacklist,
-        _briefDesc = briefDesc,
-        _cityCode = cityCode,
-        _coverUrl = coverUrl,
-        _followed = followed,
-        _gender = gender,
-        _identifyImgDesc = identifyImgDesc,
-        _identifyImgUrl = identifyImgUrl,
         _identifyTag = identifyTag,
         _identities = identities,
-        _isVip = isVip,
+        _briefDesc = briefDesc,
+        _albumSize = albumSize,
         _musicSize = musicSize,
-        _mvSize = mvSize,
-        _name = name,
-        _nickname = nickname,
-        _provinceCode = provinceCode,
-        _transnames = transnames,
-        _userId = userid,
-        _videoCount = videoCount;
+        _mvSize = mvSize;
 
-  factory Artist.fromJson(Map<String, dynamic> json) {
-    return Artist._internal(
-      artistid: json['artist']['id'],
-      alias: json['artist']['alias'],
-      albumSize: json['artist']['albumSize'],
-      avatarUrl: json['artist']['avatar'],
-      blacklist: json['blacklist'],
-      briefDesc: json['artist']['briefDesc'],
-      cityCode: json['user'] != null && json['user'].containsKey('city')
-          ? json['user']['city']
-          : null,
-      coverUrl: json['artist']['cover'],
-      followed: json['user'] != null && json['user'].containsKey('followed')
-          ? json['user']['followed']
-          : false,
-      gender: json['user'] != null && json['user'].containsKey('gender')
-          ? json['user']['followed']
-          : null,
-      identifyImgDesc: json['artist']['identify'] != null &&
-              json['artist']['identify'].containsKey('imageDesc')
-          ? json['artist']['identify']['imageDesc']
-          : null,
-      identifyImgUrl: json['artist']['identify'] != null &&
-              json['artist']['identify'].containsKey('imageUrl')
-          ? json['artist']['identify']['imageUrl']
-          : null,
-      identifyTag: json['artist']['identifyTag'],
-      identities: json['artist']['identities'],
-      isVip: json.containsKey('vipRights'),
-      musicSize: json['artist']['musicSize'],
-      mvSize: json['artist']['mvSize'],
-      name: json['artist']['name'],
-      nickname: json['user'] != null && json['user'].containsKey('nickname')
-          ? json['user']['nickname']
-          : null,
-      provinceCode: json['user'] != null && json['user'].containsKey('province')
-          ? json['user']['province']
-          : null,
-      transnames: json['artist']['transNames'],
-      userid: json['user'] != null && json['user'].containsKey('userId')
-          ? json['user']['userId']
-          : null,
-      videoCount: json['artist']['videoCount'],
+  static T? _getJsonValue<T>(Map<String, dynamic> json, String key) {
+    if (json.containsKey(key)) {
+      return json[key];
+    }
+    return null;
+  }
+
+  factory ArtistProfile.fromJson(Map<String, dynamic> json) {
+    return ArtistProfile._internal(
+      id: _getJsonValue(json, 'id'),
+      cover: _getJsonValue(json, 'cover'),
+      avatar: _getJsonValue(json, 'avatar'),
+      name: _getJsonValue(json, 'name'),
+      transnames: _getJsonValue(json, 'transnames'),
+      alias: _getJsonValue(json, 'alias'),
+      identifyTag: _getJsonValue(json, 'identifyTag'),
+      identities: _getJsonValue(json, 'identities'),
+      briefDesc: _getJsonValue(json, 'briefDesc'),
+      albumSize: _getJsonValue(json, 'albumSize'),
+      musicSize: _getJsonValue(json, 'musicSize'),
+      mvSize: _getJsonValue(json, 'mvSize'),
     );
   }
-
-  factory Artist.fromBrief(Map<String, dynamic> json) {
-    return Artist._internal(
-        artistid: json['id'], name: json['name'], alias: json['alias']);
-  }
 }
+

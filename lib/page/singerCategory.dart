@@ -2,7 +2,7 @@ import 'package:cloud_music/resource/color.dart';
 import 'package:cloud_music/resource/constants.dart';
 import 'package:cloud_music/resource/dim.dart';
 import 'package:cloud_music/util/NetworkRequest.dart';
-import 'package:cloud_music/widget/listItem/topListSingeritem.dart';
+import 'package:cloud_music/widget/listItem/topListSingerItem.dart';
 import 'package:flutter/material.dart';
 import 'package:logger/logger.dart';
 

@@ -1,11 +1,51 @@
 import 'package:cloud_music/model/song/album.dart';
-import 'package:cloud_music/model/song/quality.dart';
+import 'package:cloud_music/model/user/artist.dart';
+
+class Quality {
+  final int _size;
+  final int _fid;
+  final int _vd;
+  final int _br;
+  final int _sr;
+
+  Quality._internal({
+    required int size,
+    required int fid,
+    required int vd,
+    required int br,
+    required int sr,
+  })  : _size = size,
+        _fid = fid,
+        _vd = vd,
+        _br = br,
+        _sr = sr;
+
+  int get size => _size;
+
+  int get fid => _fid;
+
+  int get vd => _vd;
+
+  int get br => _br;
+
+  int get sr => _sr;
+
+  factory Quality.fromJson(Map<String, dynamic> json) {
+    return Quality._internal(
+      size: json['size'],
+      fid: json['fid'],
+      vd: json['vd'],
+      br: json['br'],
+      sr: json['sr'],
+    );
+  }
+}
 
 class Song {
   final int _id;
   final String _name;
   final int? _type;
-  final List<dynamic>? _artists;
+  final List<ArtistProfile>? _artists;
   final List<dynamic>? _alias;
 
   // 歌曲热度
@@ -95,7 +135,7 @@ class Song {
 
   int? get type => _type;
 
-  List<dynamic>? get artists => _artists;
+  List<ArtistProfile>? get artists => _artists;
 
   List<dynamic>? get alias => _alias;
 
@@ -139,7 +179,7 @@ class Song {
     required int id,
     required String name,
     int? type,
-    List<dynamic>? artists,
+    List<ArtistProfile>? artists,
     List<dynamic>? alias,
     int? popularity,
     int? fee,
@@ -183,40 +223,41 @@ class Song {
         _mvId = mvId,
         _resourceState = resourceState;
 
-  factory Song.fromBrief(Map<String, dynamic> json) {
-    return Song._internal(
-      id: json['id'],
-      name: json['name'],
-      artists: json['ar'],
-      album: Album.fromSongAlbum(json['al']),
-    );
+  static T? _getJsonValue<T>(Map<String, dynamic> json, String key) {
+    if (json.containsKey(key)) {
+      return json[key];
+    }
+    return null;
   }
 
   factory Song.fromJson(Map<String, dynamic> json) {
     return Song._internal(
-      id: json['id'],
-      name: json['name'],
-      type: json['t'],
-      artists: json['ar'],
-      alias: json['alia'],
-      popularity: json['pop'],
-      fee: json['fee'],
-      album: json['al'] != null ? Album.fromSongAlbum(json['al']) : null,
-      version: json['version'],
-      single: json['single'],
-      publishTime: json['publishTime'],
-      djId: json['djId'],
-      s_id: json['s_id'],
-      durationTime: json['dt'],
-      originCoverType: json['originCoverType'],
-      cd: json['cd'],
-      no: json['no'],
-      sq: json['sq'],
-      h: json['h'],
-      m: json['m'],
-      l: json['l'],
-      mvId: json['mv'],
-      resourceState: json['resourceState'],
+      id: _getJsonValue(json, 'id'),
+      name: _getJsonValue(json, 'name'),
+      type: _getJsonValue(json, 'type'),
+      artists: json.containsKey("ar")
+          ? List<ArtistProfile>.from(
+              json["ar"].map((x) => ArtistProfile.fromJson(x)))
+          : null,
+      alias: _getJsonValue(json, 'alias'),
+      popularity: _getJsonValue(json, 'pop'),
+      fee: _getJsonValue(json, 'fee'),
+      album: json['al'] != null ? Album.fromJson(json['al']) : null,
+      version: _getJsonValue(json, "version"),
+      single: _getJsonValue(json, "single"),
+      publishTime: _getJsonValue(json, "publishTime"),
+      djId: _getJsonValue(json, "djId"),
+      s_id: _getJsonValue(json, "s_id"),
+      durationTime: _getJsonValue(json, "dt"),
+      originCoverType: _getJsonValue(json, "originCoverType"),
+      cd: _getJsonValue(json, "cd"),
+      no: _getJsonValue(json, "no"),
+      sq: json.containsKey("sq") ? Quality.fromJson(json["sq"]) : null,
+      h: json.containsKey("h") ? Quality.fromJson(json["h"]) : null,
+      m: json.containsKey("m") ? Quality.fromJson(json["m"]) : null,
+      l: json.containsKey("l") ? Quality.fromJson(json["l"]) : null,
+      mvId: _getJsonValue(json, "mv"),
+      resourceState: _getJsonValue(json, "resourceState"),
     );
   }
 }
