@@ -1,6 +1,7 @@
 import 'package:cloud_music/model/user/topListSinger.dart';
 import 'package:cloud_music/resource/dim.dart';
 import 'package:cloud_music/util/NetworkRequest.dart';
+import 'package:cloud_music/widget/image/avatar.dart';
 import 'package:flutter/material.dart';
 import '../../model/user/artist.dart';
 
@@ -49,30 +50,8 @@ class _TopListSingerItemState extends State<TopListSingerItem> {
       child: Padding(
         padding: const EdgeInsets.all(8.0),
         child: ListTile(
-          leading: ClipOval(
-            child: widget._singer.picUrl == null
-                ? Image.asset(
-                    "assets/images/placeholder_disk_play_song.png",
-                    width: Dim.screenUtilOnHorizontal(50),
-                    height: Dim.screenUtilOnVertical(50),
-                    fit: BoxFit.fill,
-                  )
-                : Image.network(
-                    widget._singer.picUrl!,
-                    width: Dim.screenUtilOnHorizontal(50),
-                    height: Dim.screenUtilOnVertical(50),
-                    fit: BoxFit.fill,
-                    loadingBuilder: (BuildContext context, Widget child,
-                        ImageChunkEvent? loadingProgress) {
-                      if (loadingProgress == null) return child;
-                      return CircularProgressIndicator(
-                        value: loadingProgress.expectedTotalBytes != null
-                            ? loadingProgress.cumulativeBytesLoaded /
-                                loadingProgress.expectedTotalBytes!
-                            : null,
-                      );
-                    },
-                  ),
+          leading: Avatar(
+            url: widget._singer.picUrl ?? '',
           ),
           title: Row(
             mainAxisSize: MainAxisSize.min,

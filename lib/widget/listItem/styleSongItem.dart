@@ -29,7 +29,7 @@ class StyleSongItem extends StatelessWidget {
         ),
         // rectangle image
         leading: ClipRRectImage(
-          url: song.album?.picUrl,
+          url: song.album?.picUrl ?? '',
           width: Dim.screenUtilOnHorizontal(Dim.styleDetailDataItemImageWidth),
           height: Dim.screenUtilOnVertical(Dim.styleDetailDataItemImageHeight),
         ),

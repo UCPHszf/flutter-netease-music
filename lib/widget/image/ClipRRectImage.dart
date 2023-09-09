@@ -1,9 +1,10 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
 import '../../resource/dim.dart';
 
 class ClipRRectImage extends StatelessWidget {
-  final String? url;
+  final String url;
   final double width;
   final double height;
   final BoxFit fit;
@@ -15,7 +16,7 @@ class ClipRRectImage extends StatelessWidget {
     this.width = 50,
     this.height = 50,
     this.fit = BoxFit.cover,
-    this.url,
+    required this.url,
     this.errorWidget,
     this.placeholder,
   }) : super(key: key);
@@ -24,17 +25,30 @@ class ClipRRectImage extends StatelessWidget {
   Widget build(BuildContext context) {
     return ClipRRect(
       borderRadius: BorderRadius.circular(Dim.screenUtilOnSp(10)),
-      child: url == null || url!.isEmpty
-          ? placeholder ?? Container()
-          : Image.network(
-              url!,
+      child: CachedNetworkImage(
+        imageUrl: url,
+        width: width,
+        height: height,
+        fit: fit,
+        placeholder: (context, url) =>
+            placeholder ??
+            Container(
               width: width,
               height: height,
-              fit: BoxFit.cover,
-              errorBuilder: (context, error, stackTrace) {
-                return errorWidget ?? Container();
-              },
+              decoration: const BoxDecoration(
+                color: Colors.white,
+              ),
             ),
+        errorWidget: (context, url, error) =>
+            errorWidget ??
+            Container(
+              width: width,
+              height: height,
+              decoration: const BoxDecoration(
+                color: Colors.white,
+              ),
+            ),
+      ),
     );
   }
 }

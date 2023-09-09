@@ -37,7 +37,7 @@ class StylePlayListItem extends StatelessWidget {
             ),
             Expanded(
               child: ClipRRectImage(
-                url: playList.cover,
+                url: playList.cover??'',
                 width: Dim.screenUtilOnHorizontal(Dim.styleDetailDataItemImageWidth),
                 height: Dim.screenUtilOnVertical(Dim.styleDetailDataItemImageHeight),
               ),

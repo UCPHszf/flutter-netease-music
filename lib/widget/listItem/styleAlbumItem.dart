@@ -40,7 +40,7 @@ class StyleAlbumItem extends StatelessWidget {
             ),
             Expanded(
               child: ClipRRectImage(
-                url: album.picUrl,
+                url: album.picUrl ?? '',
                 width: Dim.screenUtilOnHorizontal(
                     Dim.styleDetailDataItemImageWidth),
                 height: Dim.screenUtilOnVertical(

@@ -1,5 +1,6 @@
 import 'package:cloud_music/model/user/artist.dart';
 import 'package:cloud_music/resource/dim.dart';
+import 'package:cloud_music/widget/image/avatar.dart';
 import 'package:cloud_music/widget/listItem/userFollowContainer.dart';
 import 'package:flutter/material.dart';
 
@@ -36,9 +37,8 @@ class _StyleArtistItemState extends State<StyleArtistItem> {
         //todo 跳转到歌手详情页
       },
       child: ListTile(
-        leading: CircleAvatar(
-          backgroundImage: NetworkImage(widget.artistProfile.picUrl!),
-          radius: 30,
+        leading: Avatar(
+          url: widget.artistProfile.picUrl!,
         ),
         title: Text(
           widget.artistProfile.name,
