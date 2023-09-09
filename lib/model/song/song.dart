@@ -3,26 +3,21 @@ import 'package:cloud_music/model/user/artist.dart';
 
 class Quality {
   final int _size;
-  final int _fid;
   final int _vd;
   final int _br;
   final int _sr;
 
   Quality._internal({
     required int size,
-    required int fid,
     required int vd,
     required int br,
     required int sr,
   })  : _size = size,
-        _fid = fid,
         _vd = vd,
         _br = br,
         _sr = sr;
 
   int get size => _size;
-
-  int get fid => _fid;
 
   int get vd => _vd;
 
@@ -32,11 +27,10 @@ class Quality {
 
   factory Quality.fromJson(Map<String, dynamic> json) {
     return Quality._internal(
-      size: json['size'],
-      fid: json['fid'],
-      vd: json['vd'],
-      br: json['br'],
-      sr: json['sr'],
+      size: json['size'].toInt(),
+      vd: json['vd'].toInt(),
+      br: json['br'].toInt(),
+      sr: json['sr'].toInt(),
     );
   }
 }
@@ -230,19 +224,28 @@ class Song {
     return null;
   }
 
+  static T? _parseJsonObjectInJson<T>(Map<String, dynamic> json, String key,
+      T Function(Map<String, dynamic>) parser) {
+    if (json.containsKey(key) && json[key] != null) {
+      return parser(json[key]);
+    }
+    return null;
+  }
+
   factory Song.fromJson(Map<String, dynamic> json) {
     return Song._internal(
       id: _getJsonValue(json, 'id'),
       name: _getJsonValue(json, 'name'),
       type: _getJsonValue(json, 'type'),
-      artists: json.containsKey("ar")
+      artists: json.containsKey("ar") && json["ar"] != null
           ? List<ArtistProfile>.from(
               json["ar"].map((x) => ArtistProfile.fromJson(x)))
           : null,
       alias: _getJsonValue(json, 'alias'),
       popularity: _getJsonValue(json, 'pop'),
       fee: _getJsonValue(json, 'fee'),
-      album: json['al'] != null ? Album.fromJson(json['al']) : null,
+      album: _parseJsonObjectInJson<Album>(
+          json, "al", (json) => Album.fromJson(json)),
       version: _getJsonValue(json, "version"),
       single: _getJsonValue(json, "single"),
       publishTime: _getJsonValue(json, "publishTime"),
@@ -252,10 +255,11 @@ class Song {
       originCoverType: _getJsonValue(json, "originCoverType"),
       cd: _getJsonValue(json, "cd"),
       no: _getJsonValue(json, "no"),
-      sq: json.containsKey("sq") ? Quality.fromJson(json["sq"]) : null,
-      h: json.containsKey("h") ? Quality.fromJson(json["h"]) : null,
-      m: json.containsKey("m") ? Quality.fromJson(json["m"]) : null,
-      l: json.containsKey("l") ? Quality.fromJson(json["l"]) : null,
+      sq: _parseJsonObjectInJson<Quality>(
+          json, "sq", (json) => Quality.fromJson(json)),
+      h: _parseJsonObjectInJson(json, "h", (json) => Quality.fromJson(json)),
+      m: _parseJsonObjectInJson(json, "m", (json) => Quality.fromJson(json)),
+      l: _parseJsonObjectInJson(json, "l", (json) => Quality.fromJson(json)),
       mvId: _getJsonValue(json, "mv"),
       resourceState: _getJsonValue(json, "resourceState"),
     );

@@ -2,7 +2,8 @@ import 'package:cloud_music/model/style/styleTemplateTextContent.dart';
 
 class MusicStyle {
   final int _tagId;
-  final String _tagName;
+  final String? _tagName;
+  final String? _name;
   final String? _enName;
   final int? _level;
   final String? _showText;
@@ -28,7 +29,8 @@ class MusicStyle {
   MusicStyle._internal({
     required int tagId,
     String? ratio,
-    required String tagName,
+    String? tagName,
+    String? name,
     String? enName,
     int? level,
     String? showText,
@@ -46,6 +48,7 @@ class MusicStyle {
     String? desc,
     String? parentNames,
   })  : _tagId = tagId,
+        _name = name,
         _tagName = tagName,
         _enName = enName,
         _level = level,
@@ -72,9 +75,18 @@ class MusicStyle {
     return null;
   }
 
+  static T? _parseJsonObjectInJson<T>(Map<String, dynamic> json, String key,
+      T Function(Map<String, dynamic>) parser) {
+    if (json.containsKey(key) && json[key] != null) {
+      return parser(json[key]);
+    }
+    return null;
+  }
+
   factory MusicStyle.fromJson(Map<String, dynamic> json) {
     return MusicStyle._internal(
-      tagId: _getJsonValue(json, 'tagId'),
+      tagId: json['tagId'],
+      name: _getJsonValue(json, 'name'),
       tagName: _getJsonValue(json, 'tagName'),
       enName: _getJsonValue(json, 'enName'),
       level: _getJsonValue(json, 'level'),
@@ -88,12 +100,20 @@ class MusicStyle {
       ratio: _getJsonValue(json, 'ratio'),
       songNum: _getJsonValue(json, 'songNum'),
       artistNum: _getJsonValue(json, 'artistNum'),
-      professionalReviews: _getJsonValue(json, 'professionalReviews') != null
-          ? StyleTemplateTextContent.fromJson(json['professionalReviews'])
-          : null,
-      tagPortrait: _getJsonValue(json, 'tagPortrait') != null
-          ? StyleTemplateTextContent.fromJson(json['tagPortrait'])
-          : null,
+      professionalReviews: _parseJsonObjectInJson<StyleTemplateTextContent>(
+        json,
+        'professionalReviews',
+        (Map<String, dynamic> jsonObject) {
+          return StyleTemplateTextContent.fromJson(jsonObject);
+        },
+      ),
+      tagPortrait: _parseJsonObjectInJson<StyleTemplateTextContent>(
+        json,
+        'tagPortrait',
+        (Map<String, dynamic> jsonObject) {
+          return StyleTemplateTextContent.fromJson(jsonObject);
+        },
+      ),
       cover: _getJsonValue(json, 'cover'),
       desc: _getJsonValue(json, 'desc'),
       parentNames: _getJsonValue(json, 'parentNames'),
@@ -110,7 +130,7 @@ class MusicStyle {
     return childrenTags;
   }
 
-  String get tagName => _tagName;
+  String? get tagName => _tagName;
 
   List<dynamic>? get childrenTags => _childrenTags;
 
@@ -147,4 +167,6 @@ class MusicStyle {
   String? get desc => _desc;
 
   String? get parentNames => _parentNames;
+
+  String? get name => _name;
 }

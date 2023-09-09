@@ -247,7 +247,7 @@ class _StyleCategoryState extends State<StyleCategory> {
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           Text(
-                            style.tagName,
+                            style.tagName??'',
                             style: TextStyle(
                               color: AppColor.white,
                               fontSize: Dim.screenUtilOnSp(Dim.fontSize20),
@@ -331,7 +331,8 @@ class _StyleCategoryState extends State<StyleCategory> {
                       ),
                       child: Center(
                         child: Text(
-                          MusicStyle.parseChildrenTags(style)[index].tagName,
+                          MusicStyle.parseChildrenTags(style)[index].tagName ??
+                              "",
                           style: TextStyle(
                             fontSize: Dim.screenUtilOnSp(Dim.fontSize15),
                             color: index == _secondLevelSelectedTagIndex
@@ -433,7 +434,7 @@ class _StyleCategoryState extends State<StyleCategory> {
                                 height: categoryItemHeight,
                                 child: Center(
                                   child: Text(
-                                    _styleList[index].tagName,
+                                    _styleList[index].tagName ?? "",
                                     style: TextStyle(
                                       fontSize:
                                           Dim.screenUtilOnSp(Dim.fontSize15),
@@ -469,7 +470,8 @@ class _StyleCategoryState extends State<StyleCategory> {
                               child: Center(
                                 child: Text(
                                   _styleList[_firstLevelSelectedTagIndex]
-                                      .tagName,
+                                          .tagName ??
+                                      "",
                                   style: TextStyle(
                                       fontSize:
                                           Dim.screenUtilOnSp(Dim.fontSize15),
@@ -591,10 +593,11 @@ class _StyleCategoryState extends State<StyleCategory> {
                                             child: Center(
                                               child: Text(
                                                 MusicStyle.parseChildrenTags(
-                                                            _styleList[
-                                                                _firstLevelSelectedTagIndex])[
-                                                        index]
-                                                    .tagName,
+                                                                _styleList[
+                                                                    _firstLevelSelectedTagIndex])[
+                                                            index]
+                                                        .tagName ??
+                                                    "",
                                                 style: TextStyle(
                                                   fontSize: Dim.screenUtilOnSp(
                                                       Dim.fontSize15),

@@ -1,5 +1,6 @@
 import 'package:cloud_music/model/song/cursorInfo.dart';
 import 'package:cloud_music/model/style/musicStyle.dart';
+import 'package:cloud_music/model/user/artist.dart';
 import 'package:cloud_music/resource/appIcon.dart';
 import 'package:cloud_music/resource/color.dart';
 import 'package:cloud_music/resource/constants.dart';
@@ -9,6 +10,7 @@ import 'package:cloud_music/util/dependencies.dart';
 import 'package:cloud_music/widget/clipper/styleDetailCoverClipper.dart';
 import 'package:cloud_music/widget/listItem/listDataSort.dart';
 import 'package:cloud_music/widget/listItem/styleAlbumItem.dart';
+import 'package:cloud_music/widget/listItem/styleArtistItem.dart';
 import 'package:cloud_music/widget/listItem/stylePlayListItem.dart';
 import 'package:cloud_music/widget/listItem/styleSongItem.dart';
 import 'package:cloud_music/widget/progressIndicator.dart';
@@ -59,7 +61,7 @@ class _StyleDetailState extends State<StyleDetail>
   bool songDataLoading = true;
   bool albumDataLoading = true;
   bool playlistDataLoading = true;
-  bool artistDataLoading = false;
+  bool artistDataLoading = true;
 
   final List<String> styleDataType = ["歌曲", "专辑", "歌单", "艺人"];
   int songSortType = Constants.sortByHot;
@@ -67,7 +69,8 @@ class _StyleDetailState extends State<StyleDetail>
 
   final List<Song> styleSongs = [];
   final List<Album> styleAlbums = [];
-  final List<PlayList> stylePlaylist = [];
+  final List<PlayList> stylePlaylists = [];
+  final List<ArtistProfile> styleArtists = [];
 
   List<CursorInfo?> styleCursorInfo = List.filled(4, null);
 
@@ -130,13 +133,34 @@ class _StyleDetailState extends State<StyleDetail>
       // album list
       List<PlayList> playLists = value.$2;
       setState(() {
-        stylePlaylist.addAll(playLists);
+        stylePlaylists.addAll(playLists);
       });
       setState(() {
         styleCursorInfo[2] = cursorInfo;
       });
       setState(() {
         playlistDataLoading = false;
+      });
+    });
+  }
+
+  void loadArtistData() {
+    setState(() {
+      artistDataLoading = true;
+    });
+    NetworkRequest.styleArtist(tagId: widget.styleId).then((value) {
+      // cursor info of album
+      CursorInfo cursorInfo = value.$1;
+      // album list
+      List<ArtistProfile> artists = value.$2;
+      setState(() {
+        styleArtists.addAll(artists);
+      });
+      setState(() {
+        styleCursorInfo[3] = cursorInfo;
+      });
+      setState(() {
+        artistDataLoading = false;
       });
     });
   }
@@ -178,6 +202,7 @@ class _StyleDetailState extends State<StyleDetail>
     loadSongData();
     loadAlbumData();
     loadPlayListData();
+    loadArtistData();
     super.initState();
   }
 
@@ -377,10 +402,25 @@ class _StyleDetailState extends State<StyleDetail>
           : SliverList.builder(
               itemBuilder: (BuildContext context, int index) {
                 return StylePlayListItem(
-                  playList: stylePlaylist[index],
+                  playList: stylePlaylists[index],
                 );
               },
-              itemCount: stylePlaylist.length,
+              itemCount: stylePlaylists.length,
+            ),
+    ];
+  }
+
+  List<Widget> styleArtist() {
+    return [
+      artistDataLoading
+          ? const SliverFillRemaining(
+              child: AppProgressIndicator(),
+            )
+          : SliverList.builder(
+              itemBuilder: (BuildContext context, int index) {
+                return StyleArtistItem(artistProfile: styleArtists[index]);
+              },
+              itemCount: styleArtists.length,
             ),
     ];
   }
@@ -496,7 +536,7 @@ class _StyleDetailState extends State<StyleDetail>
                     styleList(styleSong()),
                     styleList(styleAlbum()),
                     styleList(stylePlayList()),
-                    Container(),
+                    styleList(styleArtist()),
                   ],
                 ),
               ),

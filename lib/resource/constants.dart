@@ -40,6 +40,7 @@ class Constants {
   static const String urlStyleSong = "/style/song";
   static const String urlStyleAlbum = "/style/album";
   static const String urlStylePlayList = "/style/playlist";
+  static const String urlStyleArtist = "/style/artist";
 
   static const String qrcodeKeyGenerateFailedInfo =
       "Failed to generate QRCode key";

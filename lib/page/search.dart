@@ -98,9 +98,7 @@ class _SearchPageState extends State<SearchPage> {
         getAllTopListData()
       ]),
       builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return const AppProgressIndicator();
-        } else {
+        if (snapshot.connectionState == ConnectionState.done) {
           return Scaffold(
             appBar: AppBar(
                 leading: Padding(
@@ -208,6 +206,8 @@ class _SearchPageState extends State<SearchPage> {
             //   ),
             // ),
           );
+        } else {
+          return const AppProgressIndicator();
         }
       },
     );

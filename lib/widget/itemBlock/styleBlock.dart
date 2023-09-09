@@ -41,7 +41,7 @@ class StyleBlock extends StatelessWidget {
               },
               child: ListTile(
                 title: Text(
-                  tags[index].tagName,
+                  tags[index].tagName??'',
                   style: TextStyle(
                     fontSize: Dim.screenUtilOnSp(Dim.fontSize15),
                     color: AppColor.grey,
@@ -85,7 +85,7 @@ class StyleBlock extends StatelessWidget {
             },
             child: ListTile(
               title: Text(
-                _style.tagName,
+                _style.tagName ?? '',
                 style: TextStyle(
                   fontSize: Dim.screenUtilOnSp(Dim.fontSize20),
                   fontWeight: FontWeight.bold,
@@ -93,7 +93,7 @@ class StyleBlock extends StatelessWidget {
                 ),
               ),
               subtitle: Text(
-                _style.enName!,
+                _style.enName ?? '',
                 style: TextStyle(
                   fontSize: Dim.screenUtilOnSp(Dim.fontSize12),
                   color: AppColor.grey,

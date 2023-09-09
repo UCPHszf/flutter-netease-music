@@ -10,12 +10,14 @@ class UserFollowContainer extends StatefulWidget {
     required this.accountId,
     this.width = 60,
     this.height = 30,
+    this.onTap,
   }) : super(key: key);
 
   final bool followed;
   final int accountId;
   final double width;
   final double height;
+  final VoidCallback? onTap;
 
   @override
   State<StatefulWidget> createState() {
@@ -28,8 +30,8 @@ class _UserFollowContainerState extends State<UserFollowContainer> {
 
   @override
   void initState() {
-    super.initState();
     _followed = widget.followed;
+    super.initState();
   }
 
   @override
@@ -37,6 +39,9 @@ class _UserFollowContainerState extends State<UserFollowContainer> {
     return GestureDetector(
       onTap: () {
         //todo 关注/取消关注
+        setState(() {
+          _followed = !_followed;
+        });
       },
       child: Container(
         width: Dim.screenUtilOnHorizontal(widget.width),
@@ -44,15 +49,15 @@ class _UserFollowContainerState extends State<UserFollowContainer> {
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10),
           border: Border.all(
-            color: widget.followed ? AppColor.grey : AppColor.red,
+            color: _followed ? AppColor.grey : AppColor.red,
             width: 1,
           ),
         ),
         child: Center(
           child: Text(
-            widget.followed ? "已关注" : "+关注",
+            _followed ? "已关注" : "+关注",
             style: TextStyle(
-              color: widget.followed ? AppColor.grey : AppColor.red,
+              color: _followed ? AppColor.grey : AppColor.red,
               fontSize: Dim.screenUtilOnSp(Dim.fontSize12),
             ),
           ),

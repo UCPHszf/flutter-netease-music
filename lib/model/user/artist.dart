@@ -123,6 +123,10 @@ class ArtistProfile {
   final int? _albumSize;
   final int? _musicSize;
   final int? _mvSize;
+  final int? _fansCount;
+  final String? _picUrl;
+  final bool? _followed;
+  final int? _accountId;
 
   int get id => _id;
 
@@ -148,6 +152,14 @@ class ArtistProfile {
 
   int? get mvSize => _mvSize;
 
+  int? get fansCount => _fansCount;
+
+  String? get picUrl => _picUrl;
+
+  bool? get followed => _followed;
+
+  int? get accountId => _accountId;
+
   ArtistProfile._internal({
     required int id,
     String? cover,
@@ -161,6 +173,10 @@ class ArtistProfile {
     int? albumSize,
     int? musicSize,
     int? mvSize,
+    int? fansCount,
+    String? picUrl,
+    bool? followed,
+    int? accountId,
   })  : _id = id,
         _cover = cover,
         _avatar = avatar,
@@ -172,7 +188,11 @@ class ArtistProfile {
         _briefDesc = briefDesc,
         _albumSize = albumSize,
         _musicSize = musicSize,
-        _mvSize = mvSize;
+        _mvSize = mvSize,
+        _fansCount = fansCount,
+        _picUrl = picUrl,
+        _followed = followed,
+        _accountId = accountId;
 
   static T? _getJsonValue<T>(Map<String, dynamic> json, String key) {
     if (json.containsKey(key)) {
@@ -195,6 +215,10 @@ class ArtistProfile {
       albumSize: _getJsonValue(json, 'albumSize'),
       musicSize: _getJsonValue(json, 'musicSize'),
       mvSize: _getJsonValue(json, 'mvSize'),
+      fansCount: _getJsonValue(json, 'fansCount'),
+      picUrl: _getJsonValue(json, 'picUrl'),
+      followed: _getJsonValue(json, 'followed'),
+      accountId: _getJsonValue(json, 'accountId'),
     );
   }
 }

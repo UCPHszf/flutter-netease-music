@@ -510,8 +510,7 @@ class NetworkRequest {
       (response) {
         final Map<String, dynamic> data = response.data as Map<String, dynamic>;
         if (data["code"] == Constants.statusCodeSuccess) {
-          return MusicStyle.fromJson(
-              data["data"] as Map<String, dynamic>);
+          return MusicStyle.fromJson(data["data"] as Map<String, dynamic>);
         } else {
           return null;
         }
@@ -582,11 +581,11 @@ class NetworkRequest {
   }
 
   //曲风-歌单
-  static Future<(CursorInfo, List<PlayList>)> stylePlaylist(
-      {required int tagId,
-      int size = 20,
-      cursor = 0,
-      }) {
+  static Future<(CursorInfo, List<PlayList>)> stylePlaylist({
+    required int tagId,
+    int size = 20,
+    cursor = 0,
+  }) {
     Dio dio = getDio();
     final String url = dio.options.baseUrl + Constants.urlStylePlayList;
     final Map<String, dynamic> params = {
@@ -602,6 +601,36 @@ class NetworkRequest {
         if (data["code"] == Constants.statusCodeSuccess) {
           for (var element in data["data"]["playlist"]) {
             result.add(PlayList.fromJson(element as Map<String, dynamic>));
+          }
+        }
+        CursorInfo cursorInfo =
+            CursorInfo.fromJson(data["data"]["page"] as Map<String, dynamic>);
+        return (cursorInfo, result);
+      },
+    );
+  }
+
+  // 曲风-艺人
+  static Future<(CursorInfo, List<ArtistProfile>)> styleArtist({
+    required int tagId,
+    int size = 20,
+    cursor = 0,
+  }) {
+    Dio dio = getDio();
+    final String url = dio.options.baseUrl + Constants.urlStyleArtist;
+    final Map<String, dynamic> params = {
+      "tagId": tagId,
+      "size": size,
+      "cursor": cursor,
+    };
+    final String buildUrl = NetworkRequest.buildUrl(url, params);
+    return dio.get(buildUrl).then(
+      (response) {
+        final Map<String, dynamic> data = response.data as Map<String, dynamic>;
+        List<ArtistProfile> result = [];
+        if (data["code"] == Constants.statusCodeSuccess) {
+          for (var element in data["data"]["artists"]) {
+            result.add(ArtistProfile.fromJson(element as Map<String, dynamic>));
           }
         }
         CursorInfo cursorInfo =
