@@ -1,4 +1,4 @@
-class CursorInfo {
+class PaginationInfo {
   final int _cursor;
   final int _size;
   final bool _more;
@@ -12,14 +12,14 @@ class CursorInfo {
 
   bool get more => _more;
 
-  CursorInfo._internal(int cursor, int size, bool more, int total)
+  PaginationInfo._internal(int cursor, int size, bool more, int total)
       : _cursor = cursor,
         _size = size,
         _more = more,
         _total = total;
 
-  factory CursorInfo.fromJson(Map<String, dynamic> json) {
-    return CursorInfo._internal(
+  factory PaginationInfo.fromJson(Map<String, dynamic> json) {
+    return PaginationInfo._internal(
       json['cursor'],
       json['size'],
       json['more'],

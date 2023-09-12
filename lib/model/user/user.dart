@@ -123,6 +123,8 @@ class UserProfile {
   final String? _artistName;
   final int? _cCount;
   final int? _playlistCount;
+  final int? _lastLoginTime;
+  final String? _lastLoginIP;
 
   int? get birthday => _birthday;
 
@@ -194,6 +196,10 @@ class UserProfile {
 
   String? get artistName => _artistName;
 
+  int? get lastLoginTime => _lastLoginTime;
+
+  String? get lastLoginIP => _lastLoginIP;
+
   UserProfile._internal({
     AvatarDetail? avatarDetail,
     int? userType,
@@ -230,6 +236,8 @@ class UserProfile {
     String? artistName,
     int? cCount,
     int? playlistCount,
+    int? lastLoginTime,
+    String? lastLoginIP,
   })  : _avatarUrl = avatarUrl,
         _userType = userType,
         _birthday = birthday,
@@ -264,11 +272,21 @@ class UserProfile {
         _artistName = artistName,
         _cCount = cCount,
         _playlistCount = playlistCount,
-        _avatarDetail = avatarDetail;
+        _avatarDetail = avatarDetail,
+        _lastLoginTime = lastLoginTime,
+        _lastLoginIP = lastLoginIP;
 
   static T? _getJsonValue<T>(Map<String, dynamic> json, String key) {
     if (json.containsKey(key)) {
       return json[key];
+    }
+    return null;
+  }
+
+  static T? _parseJsonObjectInJson<T>(Map<String, dynamic> json, String key,
+      T Function(Map<String, dynamic>) parser) {
+    if (json.containsKey(key) && json[key] != null) {
+      return parser(json[key]);
     }
     return null;
   }
@@ -310,9 +328,10 @@ class UserProfile {
       artistName: _getJsonValue(json, "artistName"),
       cCount: _getJsonValue<int>(json, "cCount"),
       playlistCount: _getJsonValue<int>(json, "playlistCount"),
-      avatarDetail: json.containsKey('avatarDetail')
-          ? AvatarDetail.fromJson(json['avatarDetail'])
-          : null,
+      avatarDetail: _parseJsonObjectInJson(
+          json, 'avatarDetail', (json) => AvatarDetail.fromJson(json)),
+      lastLoginTime: _getJsonValue<int>(json, "lastLoginTime"),
+      lastLoginIP: _getJsonValue(json, "lastLoginIP"),
     );
   }
 }
@@ -393,21 +412,26 @@ class User {
     return null;
   }
 
+  static T? _parseJsonObjectInJson<T>(Map<String, dynamic> json, String key,
+      T Function(Map<String, dynamic>) parser) {
+    if (json.containsKey(key) && json[key] != null) {
+      return parser(json[key]);
+    }
+    return null;
+  }
+
   factory User.fromJson(Map<String, dynamic> json) {
     return User._internal(
-      userIdentify: json['userIdentify'] != null
-          ? UserIdentify.fromJson(json['userIdentify'])
-          : null,
+      userIdentify: _parseJsonObjectInJson(
+          json, 'userIdentify', (json) => UserIdentify.fromJson(json)),
       level: _getJsonValue<int>(json, "level"),
       listenSongs: _getJsonValue<int>(json, "listenSongs"),
-      userPoint: json['userPoint'] != null
-          ? UserPoint.fromJson(json['userPoint'])
-          : null,
+      userPoint: _parseJsonObjectInJson(json, 'userPoint',
+          (Map<String, dynamic> json) => UserPoint.fromJson(json)),
       mobileSign: _getJsonValue(json, "mobileSign"),
       pcSign: _getJsonValue(json, "pcSign"),
-      userProfile: json['profile'] != null
-          ? UserProfile.fromJson(json['profile'])
-          : null,
+      userProfile: _parseJsonObjectInJson(
+          json, 'profile', (json) => UserProfile.fromJson(json)),
       peopleCanSeeMyPlayRecord:
           _getJsonValue<bool>(json, "peopleCanSeeMyPlayRecord"),
       adValid: _getJsonValue<bool>(json, "adValid"),

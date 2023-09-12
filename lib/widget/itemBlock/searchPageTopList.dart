@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:logger/logger.dart';
 import 'package:provider/provider.dart';
 import '../../model/song/topListSong.dart';
-import '../../provider/pageSettingState.dart';
+import '../../provider/upstreamSettingState.dart';
 import '../../resource/color.dart';
 import '../../util/dependencies.dart';
 

@@ -7,6 +7,8 @@ NetEase Music implement in flutter 基于flutter实现的网易云音乐
     - NetEase Cloud Music API (https://binaryify.github.io/NeteaseCloudMusicApi/#/)
     - Firebase firecloudstore
     - GetIt
+    - flutter i18n
+    - Shared Preferences
 
 # Overall Progress
 
@@ -80,6 +82,10 @@ NetEase Music implement in flutter 基于flutter实现的网易云音乐
         我添加了一个静态方法_getJsonValue来检查字段是否存在。如果是，则返回该值；否则，返回null。)
     - style detail(风格详情)
         - artist list UI(歌手列表UI)
+
+9.12
+    - working on drawer of the home page(正在开发首页的抽屉)
+    - import localizations(导入本地化)
 
 
 

@@ -85,27 +85,33 @@ class Artist {
     return null;
   }
 
+  static T? _parseJsonObjectInJson<T>(Map<String, dynamic> json, String key,
+      T Function(Map<String, dynamic>) parser) {
+    if (json.containsKey(key) && json[key] != null) {
+      return parser(json[key]);
+    }
+    return null;
+  }
+
   factory Artist.fromJson(Map<String, dynamic> json) {
     return Artist._internal(
       videoCount: _getJsonValue(json, 'videoCount'),
-      identify: json['identify'] != null
-          ? UserIdentify.fromJson(json['identify'])
-          : null,
-      profile: json['profile'] != null
-          ? ArtistProfile.fromJson(json['profile'])
-          : null,
+      identify: _parseJsonObjectInJson(json, 'identify',
+          (Map<String, dynamic> json) => UserIdentify.fromJson(json)),
+      profile: _parseJsonObjectInJson(json, 'profile',
+          (Map<String, dynamic> json) => ArtistProfile.fromJson(json)),
       blacklist: _getJsonValue(json, 'blacklist'),
       preferShow: _getJsonValue(json, 'preferShow'),
       showPriMsg: _getJsonValue(json, 'showPriMsg'),
-      expertIdentifyTags: json['expertIdentifyTags'] != null
+      expertIdentifyTags: json.containsKey('expertIdentifyTags') &&
+              json['expertIdentifyTags'] != null
           ? (json['expertIdentifyTags'] as List<dynamic>)
               .map((e) => ExpertIdentify.fromJson(e))
               .toList()
           : null,
       eventCount: _getJsonValue(json, 'eventCount'),
-      userProfile: json['userProfile'] != null
-          ? UserProfile.fromJson(json['userProfile'])
-          : null,
+      userProfile: _parseJsonObjectInJson(json, 'userProfile',
+          (Map<String, dynamic> json) => UserProfile.fromJson(json)),
     );
   }
 }
@@ -222,4 +228,3 @@ class ArtistProfile {
     );
   }
 }
-

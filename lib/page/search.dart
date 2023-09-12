@@ -10,7 +10,7 @@ import 'package:logger/logger.dart';
 import 'package:provider/provider.dart';
 
 import '../model/song/topListSong.dart';
-import '../provider/pageSettingState.dart';
+import '../provider/upstreamSettingState.dart';
 import '../util/NetworkRequest.dart';
 import '../util/dependencies.dart';
 import '../widget/itemBlock/searchPageTopList.dart';
@@ -39,7 +39,7 @@ class _SearchPageState extends State<SearchPage> {
 
   late final List<Widget> subSearchCategoryList;
   late final List<String> loadedTopList;
-  late final PageSettingState pageSettingState;
+  late final UpstreamPageSettingState pageSettingState;
   Logger logger = getIt<Logger>();
 
   Future<List<List<TopListSong>>> getAllTopListData() async {
@@ -83,7 +83,7 @@ class _SearchPageState extends State<SearchPage> {
         onTap: () {},
       ),
     ];
-    pageSettingState = Provider.of<PageSettingState>(context, listen: false);
+    pageSettingState = Provider.of<UpstreamPageSettingState>(context, listen: false);
     loadedTopList = pageSettingState.searchPageTopList;
     loadedTopList.retainWhere(
       (element) => pageSettingState.allTopList.containsKey(element),

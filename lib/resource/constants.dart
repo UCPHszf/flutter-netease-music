@@ -7,7 +7,6 @@ class Constants {
   static const String apiServerField = 'apiServer';
   static const String searchPageTopListField = 'searchPageTopList';
   static const String topListLimitField = 'topListLimit';
-  static const String mmkvQRKey = 'qr_key';
 
   static const String urlSendCaptcha = "/captcha/sent";
   static const String urlCaptchaVerify = "/captcha/verify";
@@ -16,6 +15,7 @@ class Constants {
   static const String urlQrcodeGenerate = "/login/qr/create";
   static const String urlQrcodeStatus = "/login/qr/check";
   static const String urlLoginStatus = "/login/status";
+  static const String urlUserAccount = "/user/account";
 
   static const String urlBanner = "/banner";
 
@@ -53,6 +53,9 @@ class Constants {
       "I have read and agree to the privacy policy";
   static const String signInPageAppBarTitle = "登录";
   static const String unKnownPageTitle = "找不到页面";
+
+  static const String messageCenter = "消息中心";
+  static const String cloudShellCenter = "云贝中心";
 
   static const String search = "搜索";
   static const String defaultSearchText = "搜索音乐、视频、播客、歌词";

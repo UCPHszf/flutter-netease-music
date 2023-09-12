@@ -1,0 +1,19 @@
+{
+  "search": "搜索",
+  "generateQRCodeTip": "点击按钮生成二维码",
+  "messageCenter": "消息中心",
+  "cloudShellCenter": "云贝中心",
+  "others": "其他",
+  "settings": "设置",
+  "darkMode": "夜间模式",
+  "timedShutdown": "定时关闭",
+  "saveMusicWhileListening": "边听边存",
+  "musicBlacklist": "音乐黑名单",
+  "musicAlarm": "音乐闹钟",
+  "adolescentMode": "青少年模式",
+  "aboutApplication": "关于",
+  "applicationShare": "应用分享",
+  "checkIn": "签到",
+  "functionEnabled": "已开启",
+  "functionDisabled": "未开启"
+}

@@ -3,7 +3,7 @@ import 'dart:ffi';
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloud_music/model/song/album.dart';
-import 'package:cloud_music/model/song/cursorInfo.dart';
+import 'package:cloud_music/model/song/paginationInfo.dart';
 import 'package:cloud_music/model/song/playlist.dart';
 import 'package:cloud_music/model/song/song.dart';
 import 'package:cloud_music/model/song/topListSong.dart';
@@ -16,6 +16,7 @@ import 'package:cloud_music/resource/enum.dart';
 import 'package:dio/dio.dart';
 import 'package:get_it/get_it.dart';
 import 'package:logger/logger.dart';
+import 'package:network_info_plus/network_info_plus.dart';
 import 'dependencies.dart';
 import 'networkManager.dart';
 
@@ -39,8 +40,14 @@ class NetworkRequest {
 
   static Dio getDio() => GetIt.instance<NetworkManager>().dio;
 
-  static String timestampString() =>
-      DateTime.now().millisecondsSinceEpoch.toString();
+  static int getTimeStamp() => DateTime.now().millisecondsSinceEpoch;
+
+  static String getCookie() => GetIt.instance<NetworkManager>().cookie;
+
+  static Future<String?> getRealIp() {
+    NetworkInfo networkInfo = NetworkInfo();
+    return networkInfo.getWifiIP();
+  }
 
   // 验证码发送
   static Future<bool> sentCaptcha(String phoneNumber,
@@ -78,7 +85,11 @@ class NetworkRequest {
     Dio dio = getDio();
     String fieldName = "unikey";
     final String url = dio.options.baseUrl + Constants.urlQrcodeKeyGenerate;
-    final Map<String, dynamic> params = {"timestamp": timestampString()};
+    String? ip = await getRealIp();
+    final Map<String, dynamic> params = {
+      "timestamp": getTimeStamp(),
+      "realIP": ip,
+    };
     final String buildUrl = NetworkRequest.buildUrl(url, params);
     Response response = await dio.get(buildUrl);
     final Map<String, dynamic> data = response.data as Map<String, dynamic>;
@@ -96,11 +107,13 @@ class NetworkRequest {
     }
     String fieldName = "qrimg";
     Dio dio = getDio();
+    String? ip = await getRealIp();
     final String url = dio.options.baseUrl + Constants.urlQrcodeGenerate;
     final Map<String, dynamic> params = {
       "key": qrCodeKey,
       "qrimg": true,
-      "timestamp": timestampString()
+      "timestamp": getTimeStamp(),
+      "realIP": ip,
     };
     final String buildUrl = NetworkRequest.buildUrl(url, params);
     Response response = await dio.get(buildUrl);
@@ -116,17 +129,21 @@ class NetworkRequest {
   static Future<int> checkQRCodeStatus(String qrCodeKey) async {
     Dio dio = getDio();
     final String url = dio.options.baseUrl + Constants.urlQrcodeStatus;
+    String? ip = await getRealIp();
     final Map<String, dynamic> params = {
       "key": qrCodeKey,
-      "timestamp": timestampString()
+      "timestamp": getTimeStamp(),
     };
     final String buildUrl = NetworkRequest.buildUrl(url, params);
     Response response = await dio.get(buildUrl);
     final Map<String, dynamic> data = response.data as Map<String, dynamic>;
-    if (data["code"] != 200) {
-      return data["code"] as int;
+    if (data["code"] == 803) {
+      NetworkManager.getInstance().cookie = data["cookie"] as String;
+    }
+    if (response.statusCode == 200) {
+      return data["code"];
     } else {
-      return data["data"]["status"] as int;
+      return 0;
     }
   }
 
@@ -134,7 +151,11 @@ class NetworkRequest {
   static Future<String> getDefaultSearchWord() {
     Dio dio = getDio();
     final String url = dio.options.baseUrl + Constants.urlDefaultSearchWord;
-    return dio.get(url).then((response) {
+    final Map<String, dynamic> params = {
+      "timestamp": getTimeStamp(),
+    };
+    final String buildUrl = NetworkRequest.buildUrl(url, params);
+    return dio.get(buildUrl).then((response) {
       final Map<String, dynamic> data = response.data as Map<String, dynamic>;
       if (data["code"] != 200) {
         return "";
@@ -376,18 +397,18 @@ class NetworkRequest {
     );
   }
 
-  // 检测是否登录
-  static Future<bool> isLogin() {
+  // 检测登录状态
+  static Future<Map<String, dynamic>> loginStatus() async {
     Dio dio = getDio();
     final String url = dio.options.baseUrl + Constants.urlLoginStatus;
-    return dio.get(url).then(
+    final Map<String, dynamic> params = {
+      "timestamp": getTimeStamp(),
+    };
+    final String buildUrl = NetworkRequest.buildUrl(url, params);
+    return dio.get(buildUrl).then(
       (response) {
         final Map<String, dynamic> data = response.data as Map<String, dynamic>;
-        if (data["code"] != 200) {
-          return false;
-        } else {
-          return data["profile"] != null;
-        }
+        return data;
       },
     );
   }
@@ -519,7 +540,7 @@ class NetworkRequest {
   }
 
   //获取曲风歌曲
-  static Future<(CursorInfo, List<Song>)> styleSong(
+  static Future<(PaginationInfo, List<Song>)> styleSong(
       {required int tagId,
       int size = 20,
       cursor = 0,
@@ -542,15 +563,15 @@ class NetworkRequest {
             result.add(Song.fromJson(element as Map<String, dynamic>));
           }
         }
-        CursorInfo cursorInfo =
-            CursorInfo.fromJson(data["data"]["page"] as Map<String, dynamic>);
+        PaginationInfo cursorInfo = PaginationInfo.fromJson(
+            data["data"]["page"] as Map<String, dynamic>);
         return (cursorInfo, result);
       },
     );
   }
 
   //获取曲风专辑
-  static Future<(CursorInfo, List<Album>)> styleAlbum(
+  static Future<(PaginationInfo, List<Album>)> styleAlbum(
       {required int tagId,
       int size = 20,
       cursor = 0,
@@ -573,15 +594,15 @@ class NetworkRequest {
             result.add(Album.fromJson(element as Map<String, dynamic>));
           }
         }
-        CursorInfo cursorInfo =
-            CursorInfo.fromJson(data["data"]["page"] as Map<String, dynamic>);
+        PaginationInfo cursorInfo = PaginationInfo.fromJson(
+            data["data"]["page"] as Map<String, dynamic>);
         return (cursorInfo, result);
       },
     );
   }
 
   //曲风-歌单
-  static Future<(CursorInfo, List<PlayList>)> stylePlaylist({
+  static Future<(PaginationInfo, List<PlayList>)> stylePlaylist({
     required int tagId,
     int size = 20,
     cursor = 0,
@@ -603,15 +624,15 @@ class NetworkRequest {
             result.add(PlayList.fromJson(element as Map<String, dynamic>));
           }
         }
-        CursorInfo cursorInfo =
-            CursorInfo.fromJson(data["data"]["page"] as Map<String, dynamic>);
+        PaginationInfo cursorInfo = PaginationInfo.fromJson(
+            data["data"]["page"] as Map<String, dynamic>);
         return (cursorInfo, result);
       },
     );
   }
 
   // 曲风-艺人
-  static Future<(CursorInfo, List<ArtistProfile>)> styleArtist({
+  static Future<(PaginationInfo, List<ArtistProfile>)> styleArtist({
     required int tagId,
     int size = 20,
     cursor = 0,
@@ -633,9 +654,29 @@ class NetworkRequest {
             result.add(ArtistProfile.fromJson(element as Map<String, dynamic>));
           }
         }
-        CursorInfo cursorInfo =
-            CursorInfo.fromJson(data["data"]["page"] as Map<String, dynamic>);
+        PaginationInfo cursorInfo = PaginationInfo.fromJson(
+            data["data"]["page"] as Map<String, dynamic>);
         return (cursorInfo, result);
+      },
+    );
+  }
+
+  // 账户信息
+  static Future<Map<String, dynamic>> userAccount() async {
+    String? ip = await getRealIp();
+    _logger.d(getCookie());
+    final Map<String, dynamic> params = {
+      "realIP": ip,
+      "cookie": getCookie(),
+    };
+    Dio dio = getDio();
+    dio.options.headers["Cookie"] = getCookie();
+    final String url = dio.options.baseUrl + Constants.urlUserAccount;
+    final String buildUrl = NetworkRequest.buildUrl(url, params);
+    return dio.get(buildUrl).then(
+      (response) {
+        final Map<String, dynamic> data = response.data as Map<String, dynamic>;
+        return data;
       },
     );
   }

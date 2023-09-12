@@ -1,8 +1,7 @@
 import 'package:cloud_music/provider/appState.dart';
 import 'package:cloud_music/resource/constants.dart';
 
-class PageSettingState extends AppState {
-  bool _isDarkMode = false;
+class UpstreamPageSettingState extends AppState {
   List<String> _searchPageTopList = [];
   int _searchPageTopListLimit = Constants.defaultTopListLimit;
 
@@ -18,13 +17,6 @@ class PageSettingState extends AppState {
 
   set searchPageTopListLimit(int value) {
     _searchPageTopListLimit = value;
-    notifyListeners();
-  }
-
-  bool get isDarkMode => _isDarkMode;
-
-  void changeTheme() {
-    _isDarkMode = !_isDarkMode;
     notifyListeners();
   }
 

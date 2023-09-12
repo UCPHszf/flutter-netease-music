@@ -1,4 +1,4 @@
-import 'package:cloud_music/model/song/cursorInfo.dart';
+import 'package:cloud_music/model/song/paginationInfo.dart';
 import 'package:cloud_music/model/style/musicStyle.dart';
 import 'package:cloud_music/model/user/artist.dart';
 import 'package:cloud_music/resource/appIcon.dart';
@@ -72,7 +72,7 @@ class _StyleDetailState extends State<StyleDetail>
   final List<PlayList> stylePlaylists = [];
   final List<ArtistProfile> styleArtists = [];
 
-  List<CursorInfo?> styleCursorInfo = List.filled(4, null);
+  List<PaginationInfo?> styleDetailDataPaginationInfo = List.filled(4, null);
 
   final double customScrollViewHorizontalPadding =
       Dim.screenUtilOnHorizontal(Dim.styleDetailListPadding);
@@ -86,14 +86,14 @@ class _StyleDetailState extends State<StyleDetail>
     NetworkRequest.styleSong(tagId: widget.styleId, sortType: songSortType)
         .then((value) {
       // cursor info of song
-      CursorInfo cursorInfo = value.$1;
+      PaginationInfo cursorInfo = value.$1;
       // song list
       List<Song> songs = value.$2;
       setState(() {
         styleSongs.addAll(songs);
       });
       setState(() {
-        styleCursorInfo[0] = cursorInfo;
+        styleDetailDataPaginationInfo[0] = cursorInfo;
       });
       setState(() {
         songDataLoading = false;
@@ -108,14 +108,14 @@ class _StyleDetailState extends State<StyleDetail>
     NetworkRequest.styleAlbum(tagId: widget.styleId, sortType: albumSortType)
         .then((value) {
       // cursor info of album
-      CursorInfo cursorInfo = value.$1;
+      PaginationInfo cursorInfo = value.$1;
       // album list
       List<Album> albums = value.$2;
       setState(() {
         styleAlbums.addAll(albums);
       });
       setState(() {
-        styleCursorInfo[1] = cursorInfo;
+        styleDetailDataPaginationInfo[1] = cursorInfo;
       });
       setState(() {
         albumDataLoading = false;
@@ -129,14 +129,14 @@ class _StyleDetailState extends State<StyleDetail>
     });
     NetworkRequest.stylePlaylist(tagId: widget.styleId).then((value) {
       // cursor info of album
-      CursorInfo cursorInfo = value.$1;
+      PaginationInfo cursorInfo = value.$1;
       // album list
       List<PlayList> playLists = value.$2;
       setState(() {
         stylePlaylists.addAll(playLists);
       });
       setState(() {
-        styleCursorInfo[2] = cursorInfo;
+        styleDetailDataPaginationInfo[2] = cursorInfo;
       });
       setState(() {
         playlistDataLoading = false;
@@ -150,14 +150,14 @@ class _StyleDetailState extends State<StyleDetail>
     });
     NetworkRequest.styleArtist(tagId: widget.styleId).then((value) {
       // cursor info of album
-      CursorInfo cursorInfo = value.$1;
+      PaginationInfo cursorInfo = value.$1;
       // album list
       List<ArtistProfile> artists = value.$2;
       setState(() {
         styleArtists.addAll(artists);
       });
       setState(() {
-        styleCursorInfo[3] = cursorInfo;
+        styleDetailDataPaginationInfo[3] = cursorInfo;
       });
       setState(() {
         artistDataLoading = false;
@@ -288,9 +288,9 @@ class _StyleDetailState extends State<StyleDetail>
                       Align(
                         alignment: Alignment.bottomCenter,
                         child: Text(
-                          styleCursorInfo[0] == null
+                          styleDetailDataPaginationInfo[0] == null
                               ? ""
-                              : "(${styleCursorInfo[0]?.total})",
+                              : "(${styleDetailDataPaginationInfo[0]?.total})",
                           textAlign: TextAlign.center,
                           style: TextStyle(
                             color: AppColor.grey,

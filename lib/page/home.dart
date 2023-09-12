@@ -1,5 +1,7 @@
 import 'package:card_swiper/card_swiper.dart';
-import 'package:cloud_music/provider/pageSettingState.dart';
+import 'package:cloud_music/model/user/user.dart';
+import 'package:cloud_music/provider/authState.dart';
+import 'package:cloud_music/provider/upstreamSettingState.dart';
 import 'package:cloud_music/provider/searchBarState.dart';
 import 'package:cloud_music/resource/appIcon.dart';
 import 'package:cloud_music/resource/color.dart';
@@ -10,7 +12,6 @@ import 'package:cloud_music/widget/search/searchBar.dart';
 import 'package:flutter/material.dart';
 import 'package:logger/logger.dart';
 import 'package:provider/provider.dart';
-
 import '../model/widget/bannerItem.dart';
 import '../resource/constants.dart';
 import '../util/dependencies.dart';
@@ -24,11 +25,24 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   List<BannerItem> _bannerList = [];
+  Logger logger = getIt<Logger>();
 
   @override
   void initState() {
     super.initState();
     Logger logger = getIt<Logger>();
+
+    AuthState authState = Provider.of<AuthState>(context, listen: false);
+
+    NetworkRequest.loginStatus().then((value) => {
+          logger.d(value),
+        });
+
+    NetworkRequest.userAccount().then((value) => {
+          authState.isLogin = value["code"] == Constants.statusCodeSuccess,
+          authState.userProfile = UserProfile.fromJson(value["profile"]),
+        });
+
     NetworkRequest.getBannerData().then(
       (value) => {
         if (mounted)
@@ -41,8 +55,8 @@ class _HomePageState extends State<HomePage> {
           },
       },
     );
-    PageSettingState pageSettingState =
-        Provider.of<PageSettingState>(context, listen: false);
+    UpstreamPageSettingState pageSettingState =
+        Provider.of<UpstreamPageSettingState>(context, listen: false);
     NetworkRequest.pageSetting().then(
       (value) {
         List<String> topList = List<String>.from(
@@ -94,9 +108,7 @@ class _HomePageState extends State<HomePage> {
         ],
         elevation: 0,
       ),
-      drawer: HomeDrawer(
-        drawerBlocks: [],
-      ),
+      drawer: HomeDrawer(),
       body: CustomScrollView(
         scrollDirection: Axis.vertical,
         physics: const BouncingScrollPhysics(),

@@ -1,0 +1,70 @@
+{
+  "search": "search",
+  "@search": {
+    "description": "text for search"
+  },
+  "generateQRCodeTip": "Press button to generate QR code",
+  "@generateQRCodeTip": {
+    "description": "Ask the user to press a button to generate a QR code"
+  },
+  "messageCenter": "Message Center",
+  "@messageCenter": {
+    "description": "leading text for message center drawer item"
+  },
+  "cloudShellCenter": "Cloud Shell Center",
+  "@cloudShellCenter": {
+    "description": "leading text for cloud shell center drawer item"
+  },
+  "others": "Others",
+  "@others": {
+    "description": "Usually for more options"
+  },
+  "settings": "Settings",
+  "@settings": {
+    "description": "leading text for settings drawer item"
+  },
+  "darkMode": "Dark Mode",
+  "@darkMode": {
+    "description": "Switch theme to dark mode"
+  },
+  "timedShutdown": "Timed Shutdown",
+  "@timedShutdown": {
+    "description": "Timed shutdown the app"
+  },
+  "saveMusicWhileListening": "Save music while listening",
+  "@saveMusicWhileListening": {
+    "description": "Save music while listening"
+  },
+  "musicBlacklist": "Music Blacklist",
+  "@musicBlacklist": {
+    "description": "blacklist of music, song or singer"
+  },
+  "musicAlarm": "Music alarm",
+  "@Music alarm": {
+    "description": "Set an alarm to play music"
+  },
+  "adolescentMode": "Adolescent Mode",
+  "@Adolescent Mode": {
+    "description": "Adolescent Mode"
+  },
+  "aboutApplication": "About application",
+  "@aboutApplication": {
+    "description": "leading text for about application drawer item"
+  },
+  "applicationShare": "Share application",
+  "@applicationShare": {
+    "description": "Share application"
+  },
+  "checkIn": "Check in",
+  "@checkIn": {
+    "description": "Daily check in"
+  },
+  "functionEnabled": "enabled",
+  "@functionEnabled": {
+    "description": "function enabled"
+  },
+  "functionDisabled": "disabled",
+  "@functionDisabled": {
+    "description": "function disabled"
+  }
+}

@@ -8,11 +8,12 @@ class Dim {
   static const double padding15 = 15;
   static const double padding20 = 20;
   static const double padding30 = 30;
+
   static const double styleDetailListPadding = padding20;
 
   static const int fontSize20 = 20;
   static const int fontSize18 = 18;
-  static const int fontSize15 = 15;
+  static const double fontSize15 = 15;
   static const int fontSize12 = 12;
 
   static const int bannerTitleTypeFontSize = 10;
@@ -40,6 +41,10 @@ class Dim {
   static const styleDetailDataItemImageHeight = 50;
   static const styleDetailDataItemImageWidth = 50;
   static const styleDetailDataItemTopClipperHeight = 10;
+
+  static const double drawerIconSize = fontSize15;
+  static const double drawerItemHorizontalPadding = padding15;
+  static const double drawerItemBorderRadius = borderRadius10;
 
   static double screenUtilOnVertical(num value) {
     return ScreenUtil().setHeight(value);

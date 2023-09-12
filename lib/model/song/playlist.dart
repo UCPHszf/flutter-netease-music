@@ -45,15 +45,22 @@ class PlayList {
     }
   }
 
+  static T? _getJsonValue<T>(Map<String, dynamic> json, String key) {
+    if (json.containsKey(key)) {
+      return json[key];
+    }
+    return null;
+  }
+
   factory PlayList.fromJson(Map<String, dynamic> json) {
     return PlayList._internal(
-      id: json['id'],
-      name: json['name'],
-      cover: json['cover'],
-      songCount: json['songCount'],
-      userName: json['userName'],
-      userId: json['userId'],
-      playCount: json['playCount'],
+      id: _getJsonValue(json, 'id'),
+      name: _getJsonValue(json, 'name'),
+      cover: _getJsonValue(json, 'coverImgUrl'),
+      songCount: _getJsonValue(json, 'trackCount'),
+      userName: _getJsonValue(json, "userName"),
+      userId: _getJsonValue(json, 'userId'),
+      playCount: _getJsonValue(json, 'playCount'),
     );
   }
 }

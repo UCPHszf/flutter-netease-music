@@ -1,17 +1,24 @@
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloud_music/util/dependencies.dart';
+import 'package:cookie_jar/cookie_jar.dart';
 import 'package:dio/dio.dart';
+import 'package:dio_cookie_manager/dio_cookie_manager.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:path_provider/path_provider.dart';
 
 import '../resource/constants.dart';
 
 class NetworkManager {
   static NetworkManager? _instance;
   late Dio _dio;
+  late String _cookie;
 
   NetworkManager._() {
     _dio = Dio(); // Initialize Dio instance
+    _cookie = "";
   }
 
   factory NetworkManager.getInstance() {
@@ -20,6 +27,20 @@ class NetworkManager {
   }
 
   Dio get dio => _dio;
+
+  String get cookie => _cookie;
+
+  set cookie(String cookie) => _cookie = cookie;
+
+  Future<void> prepareJar() async {
+    final Directory appDocDir = await getApplicationDocumentsDirectory();
+    final String appDocPath = appDocDir.path;
+    final jar = PersistCookieJar(
+      ignoreExpires: true,
+      storage: FileStorage("$appDocPath/.cookies/"),
+    );
+    dio.interceptors.add(CookieManager(jar));
+  }
 
   Future<void> initialize() async {
     String baseUrl = await _getApiServer();
@@ -72,6 +93,4 @@ class NetworkManager {
       return "";
     }
   }
-
-  
 }

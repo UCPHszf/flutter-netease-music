@@ -24,20 +24,12 @@ class _SignInPageState extends State<SignInPage> {
   @override
   void initState() {
     super.initState();
-    NetworkRequest.isLogin().then(
-      (value) => {
-        if (value)
-          {
-            Navigator.pushReplacementNamed(context, Constants.homePageRoute),
-          }
-      },
-    );
   }
 
   @override
   void dispose() {
-    super.dispose();
     timer?.cancel();
+    super.dispose();
   }
 
   void startTimerOnCheckQRCodeStatus(String qrCodeKey,
@@ -48,6 +40,7 @@ class _SignInPageState extends State<SignInPage> {
         second -= interval;
         final qrStatusCode = await NetworkRequest.checkQRCodeStatus(qrCodeKey);
         if (qrStatusCode == Constants.qrAuthorizeSuccess) {
+          timer.cancel();
           if (context.mounted) {
             Navigator.pushNamed(context, Constants.homePageRoute);
           }

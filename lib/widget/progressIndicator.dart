@@ -12,7 +12,7 @@ class AppProgressIndicator extends StatelessWidget {
         color: AppColor.white,
       ),
       child: const Center(
-        child: CircularProgressIndicator(),
+        child: CircularProgressIndicator.adaptive(),
       ),
     );
   }

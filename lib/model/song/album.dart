@@ -49,6 +49,14 @@ class Album {
     return null;
   }
 
+  static T? _parseJsonObjectInJson<T>(Map<String, dynamic> json, String key,
+      T Function(Map<String, dynamic>) parser) {
+    if (json.containsKey(key) && json[key] != null) {
+      return parser(json[key]);
+    }
+    return null;
+  }
+
   factory Album.fromJson(Map<String, dynamic> json) {
     return Album._internal(
       name: _getJsonValue(json, 'name'),
@@ -56,10 +64,8 @@ class Album {
       picUrl: _getJsonValue(json, 'picUrl'),
       onSale: _getJsonValue(json, 'onSale'),
       publishTime: _getJsonValue(json, 'publishTime'),
-      artist: json.containsKey('artist')
-          ? ArtistProfile.fromJson(json['artist'])
-          : null,
+      artist: _parseJsonObjectInJson(
+          json, 'artist', (json) => ArtistProfile.fromJson(json)),
     );
   }
-
 }

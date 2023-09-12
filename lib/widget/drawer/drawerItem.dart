@@ -1,4 +1,6 @@
 import 'package:cloud_music/model/widget/drawerListTileData.dart';
+import 'package:cloud_music/resource/color.dart';
+import 'package:cloud_music/resource/dim.dart';
 import 'package:flutter/material.dart';
 
 class DrawerItem extends StatelessWidget {
@@ -8,23 +10,25 @@ class DrawerItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(5.0),
+    return GestureDetector(
+      onTap: data.onTap,
       child: ListTile(
-        title: Text(data.text),
-        leading: Icon(data.icon),
-        trailing: Row(
-          children: [
-            if (data.trailingText != null)
-              Text(
-                data.trailingText!,
-                style: const TextStyle(color: Colors.white),
-                textAlign: TextAlign.right,
-              ),
-            const Icon(Icons.arrow_right)
-          ],
+        shape: data.shape,
+        tileColor: AppColor.white,
+        horizontalTitleGap: Dim.screenUtilOnHorizontal(-5),
+        contentPadding: EdgeInsets.symmetric(
+          horizontal: Dim.screenUtilOnHorizontal(Dim.drawerItemHorizontalPadding),
         ),
-        onTap: data.onTap as void Function()?,
+        iconColor: AppColor.black,
+        title: Text(
+          data.titleText,
+          style: TextStyle(
+            fontSize: Dim.screenUtilOnSp(Dim.fontSize15),
+          ),
+        ),
+        leading: Icon(data.leadingIcon),
+        trailing: data.trailingWidget,
+        onTap: data.onTap,
       ),
     );
   }

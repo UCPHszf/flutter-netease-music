@@ -1,15 +1,19 @@
 import 'package:flutter/material.dart';
 
 class DrawerListTileData {
-  String text;
-  String? trailingText;
-  IconData icon;
-  Function onTap;
+  final String titleText;
+  final String? subTitleText;
+  final IconData? leadingIcon;
+  final Widget? trailingWidget;
+  final VoidCallback? onTap;
+  final ShapeBorder? shape;
 
-  DrawerListTileData({
-    required this.text,
-    required this.trailingText,
-    required this.icon,
-    required this.onTap,
+  const DrawerListTileData({
+    required this.titleText,
+    this.subTitleText,
+    this.leadingIcon,
+    this.trailingWidget,
+    this.onTap,
+    this.shape,
   });
 }
