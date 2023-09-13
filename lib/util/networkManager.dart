@@ -15,10 +15,12 @@ class NetworkManager {
   static NetworkManager? _instance;
   late Dio _dio;
   late String _cookie;
+  late CookieJar _cookieJar;
 
   NetworkManager._() {
     _dio = Dio(); // Initialize Dio instance
     _cookie = "";
+    _cookieJar = CookieJar();
   }
 
   factory NetworkManager.getInstance() {
@@ -26,11 +28,9 @@ class NetworkManager {
     return _instance!;
   }
 
+  CookieJar get cookieJar => _cookieJar;
+
   Dio get dio => _dio;
-
-  String get cookie => _cookie;
-
-  set cookie(String cookie) => _cookie = cookie;
 
   Future<void> prepareJar() async {
     final Directory appDocDir = await getApplicationDocumentsDirectory();
@@ -52,6 +52,7 @@ class NetworkManager {
     _dio.options.receiveTimeout =
         const Duration(seconds: Constants.receiveTimeoutSeconds);
     _dio.interceptors.clear();
+    _dio.interceptors.add(CookieManager(cookieJar));
     _dio.interceptors.add(InterceptorsWrapper(
       onRequest: (options, handler) {
         return handler.next(options); //continue

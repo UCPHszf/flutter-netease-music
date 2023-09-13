@@ -13,6 +13,7 @@ import 'package:cloud_music/model/user/topListSinger.dart';
 import 'package:cloud_music/model/widget/bannerItem.dart';
 import 'package:cloud_music/resource/constants.dart';
 import 'package:cloud_music/resource/enum.dart';
+import 'package:cloud_music/util/cookieParser.dart';
 import 'package:dio/dio.dart';
 import 'package:get_it/get_it.dart';
 import 'package:logger/logger.dart';
@@ -41,8 +42,6 @@ class NetworkRequest {
   static Dio getDio() => GetIt.instance<NetworkManager>().dio;
 
   static int getTimeStamp() => DateTime.now().millisecondsSinceEpoch;
-
-  static String getCookie() => GetIt.instance<NetworkManager>().cookie;
 
   static Future<String?> getRealIp() {
     NetworkInfo networkInfo = NetworkInfo();
@@ -85,10 +84,8 @@ class NetworkRequest {
     Dio dio = getDio();
     String fieldName = "unikey";
     final String url = dio.options.baseUrl + Constants.urlQrcodeKeyGenerate;
-    String? ip = await getRealIp();
     final Map<String, dynamic> params = {
       "timestamp": getTimeStamp(),
-      "realIP": ip,
     };
     final String buildUrl = NetworkRequest.buildUrl(url, params);
     Response response = await dio.get(buildUrl);
@@ -107,13 +104,11 @@ class NetworkRequest {
     }
     String fieldName = "qrimg";
     Dio dio = getDio();
-    String? ip = await getRealIp();
     final String url = dio.options.baseUrl + Constants.urlQrcodeGenerate;
     final Map<String, dynamic> params = {
       "key": qrCodeKey,
       "qrimg": true,
       "timestamp": getTimeStamp(),
-      "realIP": ip,
     };
     final String buildUrl = NetworkRequest.buildUrl(url, params);
     Response response = await dio.get(buildUrl);
@@ -129,7 +124,6 @@ class NetworkRequest {
   static Future<int> checkQRCodeStatus(String qrCodeKey) async {
     Dio dio = getDio();
     final String url = dio.options.baseUrl + Constants.urlQrcodeStatus;
-    String? ip = await getRealIp();
     final Map<String, dynamic> params = {
       "key": qrCodeKey,
       "timestamp": getTimeStamp(),
@@ -138,13 +132,24 @@ class NetworkRequest {
     Response response = await dio.get(buildUrl);
     final Map<String, dynamic> data = response.data as Map<String, dynamic>;
     if (data["code"] == 803) {
-      NetworkManager.getInstance().cookie = data["cookie"] as String;
+      await saveCookies(data["cookie"]);
     }
     if (response.statusCode == 200) {
       return data["code"];
     } else {
       return 0;
     }
+  }
+
+  static Future<void> saveCookies(String cookieStr) async {
+    final parsedCookie = CookieParse(cookieStr).cookieSlices;
+    final cookies = parsedCookie.map((element) {
+      return Cookie.fromSetCookieValue(element);
+    }).toList();
+    // _logger.d(cookies);
+    await NetworkManager.getInstance()
+        .cookieJar
+        .saveFromResponse(Uri.parse(getDio().options.baseUrl), cookies);
   }
 
   // 获取默认搜索词
@@ -663,17 +668,10 @@ class NetworkRequest {
 
   // 账户信息
   static Future<Map<String, dynamic>> userAccount() async {
-    String? ip = await getRealIp();
-    _logger.d(getCookie());
-    final Map<String, dynamic> params = {
-      "realIP": ip,
-      "cookie": getCookie(),
-    };
     Dio dio = getDio();
-    dio.options.headers["Cookie"] = getCookie();
+    // dio.options.headers["Cookie"] = getCookie();
     final String url = dio.options.baseUrl + Constants.urlUserAccount;
-    final String buildUrl = NetworkRequest.buildUrl(url, params);
-    return dio.get(buildUrl).then(
+    return dio.get(url).then(
       (response) {
         final Map<String, dynamic> data = response.data as Map<String, dynamic>;
         return data;

@@ -87,6 +87,14 @@ NetEase Music implement in flutter 基于flutter实现的网易云音乐
     - working on drawer of the home page(正在开发首页的抽屉)
     - import localizations(导入本地化)
 
+9.13
+    - Solved the authentication problem. It is turned out that the cookie from the api need to be
+    parsed manually, thanks to the github author @ijenfeng and his project https://github.com/ijinfeng/dreamMusic/tree/main
+    I found where the problem is. Here for the cookie parser I just used his CookieParser directly.
+    I will work on the persistent cookie and login status in the future.
+    (解决了身份验证问题。原来是需要手动解析api的cookie，感谢github作者@ijenfeng和他的项目,我找到了问题所在。这里对于cookie解析器，
+    我直接使用了他的代码。我将来会继续研究cookie的持久化和登录状态。)
+
 
 
 

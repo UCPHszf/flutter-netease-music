@@ -52,7 +52,7 @@ class MyApp extends StatelessWidget {
           title: 'Netease Cloud Music Flutter',
           debugShowCheckedModeBanner: false,
           routes: Routes.route(),
-          initialRoute: Constants.homePageRoute,
+          initialRoute: Constants.signInPageRoute,
           onUnknownRoute: (settings) => Routes.onUnknownRoute(settings),
           onGenerateRoute: (settings) => Routes.onGenerateRoute(settings),
           navigatorKey: GetIt.instance<GlobalKey<NavigatorState>>(),
